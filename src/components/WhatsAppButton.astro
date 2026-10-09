@@ -1,0 +1,85 @@
+---
+import Icon from './Icon.astro';
+import { getLocale } from '../i18n/utils';
+import { ui } from '../i18n/ui';
+import { site } from '../data/site';
+
+const t = ui[getLocale(Astro.url)].whatsapp;
+const href = `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(t.message)}`;
+---
+
+<a
+  href={href}
+  target="_blank"
+  rel="noopener"
+  aria-label={t.label}
+  class="wa-button group fixed bottom-5 right-5 z-[55] flex items-center gap-3 sm:bottom-7 sm:right-7"
+  data-visible="false"
+  data-wa
+>
+  <span
+    class="pointer-events-none hidden translate-x-2 whitespace-nowrap rounded-sm bg-white px-4 py-2.5 text-xs font-medium text-navy-950 opacity-0 shadow-lg transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100 md:block"
+  >
+    {t.label}
+  </span>
+  <span class="relative grid size-14 place-items-center rounded-full bg-[#25d366] text-white shadow-[0_12px_30px_-8px_rgb(37_211_102/0.6)] transition-transform duration-300 group-hover:scale-105">
+    <span class="wa-ring absolute inset-0 rounded-full border border-[#25d366]" aria-hidden="true"></span>
+    <Icon name="whatsapp" size={26} />
+  </span>
+</a>
+
+<style>
+  .wa-button {
+    opacity: 0;
+    translate: 0 1.5rem;
+    pointer-events: none;
+    transition:
+      opacity 0.5s var(--ease-out-expo),
+      translate 0.6s var(--ease-out-expo);
+  }
+
+  .wa-button[data-visible='true'] {
+    opacity: 1;
+    translate: 0 0;
+    pointer-events: auto;
+  }
+
+  .wa-ring {
+    animation: wa-ping 2.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  @keyframes wa-ping {
+    0% {
+      transform: scale(1);
+      opacity: 0.6;
+    }
+    70%,
+    100% {
+      transform: scale(1.55);
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wa-ring {
+      animation: none;
+    }
+  }
+
+  :global(html.menu-open) .wa-button {
+    opacity: 0;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  // Aparece depois que o usuário passa do hero, para não poluir a primeira dobra.
+  const wa = document.querySelector<HTMLElement>('[data-wa]');
+  if (wa) {
+    const update = () => {
+      wa.dataset.visible = String(window.scrollY > window.innerHeight * 0.6);
+    };
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+</script>

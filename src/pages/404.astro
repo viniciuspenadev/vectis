@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<BaseLayout title="Página não encontrada | Vectis International Logistics" description="A página que você procura não existe ou foi movida." noindex>
+  <section class="grain relative isolate flex min-h-[100svh] items-center overflow-hidden bg-navy-950 pt-24 text-white">
+    <div class="container-x">
+      <p class="eyebrow flex items-center gap-3 text-ice-300">
+        Erro 404
+      </p>
+      <h1 class="heading-brand mt-6 text-[clamp(2rem,5vw,4rem)]">
+        Esta rota não existe.<br /><span class="text-metal">Mas conhecemos o caminho.</span>
+      </h1>
+      <p class="mt-6 max-w-lg text-lg text-steel-300" lang="en">This page could not be found. Let's get you back on track.</p>
+      <div class="mt-10 flex flex-wrap gap-4">
+        <a href="/" class="btn btn-outline">Página inicial <Icon name="arrow-right" size={15} /></a>
+        <a href="/en/" class="btn btn-outline" lang="en">Home (EN) <Icon name="arrow-right" size={15} /></a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

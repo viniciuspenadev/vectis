@@ -1,0 +1,268 @@
+---
+/**
+ * Serviços em painéis expansíveis (desktop) / carrossel com snap (mobile).
+ * O painel ativo abre com hover, clique, foco de teclado ou âncora (#service-ocean).
+ */
+import { Image } from 'astro:assets';
+import Icon, { type IconName } from '../Icon.astro';
+import { getLocale } from '../../i18n/utils';
+import { homeCopy } from '../../i18n/home';
+import { ui } from '../../i18n/ui';
+import { serviceSlugs, serviceVisuals } from '../../data/services';
+
+const locale = getLocale(Astro.url);
+const t = homeCopy[locale].services;
+const names = ui[locale].services;
+---
+
+<section id="services" class="relative overflow-hidden bg-navy-900 py-24 text-white md:py-32">
+  <div class="pointer-events-none absolute -right-40 top-0 size-[38rem] rounded-full bg-ice-500/[0.07] blur-[120px]" aria-hidden="true"></div>
+
+  <div class="container-x relative">
+    <div class="grid gap-8 lg:grid-cols-12 lg:items-end">
+      <div class="lg:col-span-7">
+        <p class="eyebrow flex items-center gap-3 text-ice-300" data-reveal="left">
+          {t.eyebrow}
+        </p>
+        <h2 class="heading-brand mt-6 text-[clamp(1.85rem,3.8vw,3.35rem)] text-white" data-reveal>
+          {t.title[0]}<br /><span class="text-metal">{t.title[1]}</span>
+        </h2>
+      </div>
+      <p class="leading-relaxed text-steel-300 lg:col-span-4 lg:col-start-9" data-reveal data-reveal-delay="120">
+        {t.text}
+      </p>
+    </div>
+
+    <div class="svc-panels mt-14 md:mt-20" data-panels data-reveal data-reveal-delay="150">
+      {
+        serviceSlugs.map((slug, i) => (
+          <article id={`service-${slug}`} class="svc-panel" data-active={String(i === 0)} data-panel>
+            <Image
+              src={serviceVisuals[slug].image}
+              alt=""
+              widths={[480, 800, 1200]}
+              sizes="(min-width: 1024px) 60vw, 85vw"
+              class="svc-img"
+            />
+            <div class="svc-shade" aria-hidden="true" />
+
+            <div class="svc-collapsed" aria-hidden="true">
+              <span class="font-display text-xs tracking-[0.2em] text-white/60">{String(i + 1).padStart(2, '0')}</span>
+              <span class="svc-vertical eyebrow !text-[11px] text-white">{names[slug].title}</span>
+            </div>
+
+            <div class="svc-content">
+              <div class="flex items-center justify-between">
+                <span class="grid size-12 place-items-center rounded-full border border-white/25 bg-navy-950/30 text-ice-300 backdrop-blur-sm">
+                  <Icon name={serviceVisuals[slug].icon as IconName} size={20} />
+                </span>
+                <span class="font-display text-xs tracking-[0.2em] text-white/60">{String(i + 1).padStart(2, '0')}</span>
+              </div>
+
+              <div class="svc-body">
+                <h3 class="heading-brand text-2xl text-white md:text-[1.75rem]">{names[slug].title}</h3>
+                <p class="mt-4 max-w-md text-sm leading-relaxed text-steel-200 md:text-[0.95rem]">{t.items[slug].text}</p>
+                <ul class="mt-5 flex flex-wrap gap-2">
+                  {t.items[slug].tags.map((tag) => (
+                    <li class="border border-white/20 px-3 py-1.5 font-display text-[10px] uppercase tracking-[0.18em] text-white/85">
+                      {tag}
+                    </li>
+                  ))}
+                </ul>
+                <a href="#contact" class="eyebrow mt-7 inline-flex items-center gap-3 text-white hover:text-ice-300" data-quote-service={slug}>
+                  {t.cta}
+                  <Icon name="arrow-right" size={14} />
+                </a>
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .svc-panels {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    margin-inline: -1.25rem;
+    padding-inline: 1.25rem;
+    scroll-padding-inline: 1.25rem;
+  }
+
+  .svc-panels::-webkit-scrollbar {
+    display: none;
+  }
+
+  .svc-panel {
+    position: relative;
+    flex: 0 0 min(82%, 24rem);
+    height: 30rem;
+    overflow: hidden;
+    scroll-snap-align: start;
+    scroll-margin-top: 7rem;
+    background: var(--color-navy-800);
+    isolation: isolate;
+  }
+
+  .svc-panel :global(.svc-img) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.55) brightness(0.62);
+    transition:
+      filter 0.9s var(--ease-out-expo),
+      scale 1.4s var(--ease-out-expo);
+  }
+
+  .svc-shade {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(0deg, rgb(5 11 22 / 0.94) 0%, rgb(5 11 22 / 0.55) 45%, rgb(5 11 22 / 0.1) 100%),
+      linear-gradient(0deg, rgb(11 42 85 / 0.35), rgb(11 42 85 / 0.35));
+  }
+
+  .svc-collapsed {
+    display: none;
+  }
+
+  .svc-content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.75rem;
+  }
+
+  @media (width >= 64rem) {
+    .svc-panels {
+      gap: 0.5rem;
+      overflow: visible;
+      margin-inline: 0;
+      padding-inline: 0;
+      height: clamp(32rem, 72vh, 40rem);
+    }
+
+    .svc-panel {
+      flex: 1 1 0;
+      min-width: 0;
+      height: auto;
+      cursor: pointer;
+      transition: flex-grow 0.9s var(--ease-out-expo);
+    }
+
+    .svc-panel[data-active='true'] {
+      flex-grow: 4.6;
+      cursor: default;
+    }
+
+    .svc-panel[data-active='true'] :global(.svc-img) {
+      filter: saturate(0.9) brightness(0.8);
+      scale: 1.04;
+    }
+
+    .svc-panel:not([data-active='true']):hover :global(.svc-img) {
+      filter: saturate(0.7) brightness(0.72);
+    }
+
+    /* Estado recolhido: número no topo e título na vertical. */
+    .svc-collapsed {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.75rem 0;
+      transition: opacity 0.4s ease 0.25s;
+    }
+
+    .svc-vertical {
+      writing-mode: vertical-rl;
+      rotate: 180deg;
+      white-space: nowrap;
+    }
+
+    .svc-panel[data-active='true'] .svc-collapsed {
+      opacity: 0;
+      transition-delay: 0s;
+    }
+
+    .svc-content {
+      padding: 2.25rem;
+      opacity: 0;
+      visibility: hidden;
+      transition:
+        opacity 0.3s ease,
+        visibility 0s linear 0.3s;
+    }
+
+    .svc-panel[data-active='true'] .svc-content {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.7s ease 0.35s;
+    }
+
+    .svc-body {
+      width: min(30rem, 100%);
+      translate: 0 1.25rem;
+      transition: translate 0.3s ease;
+    }
+
+    .svc-panel[data-active='true'] .svc-body {
+      translate: 0 0;
+      transition: translate 1s var(--ease-out-expo) 0.35s;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .svc-panel,
+    .svc-panel :global(.svc-img),
+    .svc-content,
+    .svc-body,
+    .svc-collapsed {
+      transition: none !important;
+    }
+  }
+</style>
+
+<script>
+  const wrap = document.querySelector<HTMLElement>('[data-panels]');
+
+  if (wrap) {
+    const panels = [...wrap.querySelectorAll<HTMLElement>('[data-panel]')];
+    const desktop = window.matchMedia('(min-width: 64rem)');
+    const canHover = window.matchMedia('(hover: hover)');
+
+    const activate = (target: HTMLElement) =>
+      panels.forEach((p) => (p.dataset.active = String(p === target)));
+
+    panels.forEach((panel) => {
+      panel.addEventListener('mouseenter', () => {
+        if (desktop.matches && canHover.matches) activate(panel);
+      });
+      panel.addEventListener('click', () => {
+        if (desktop.matches) activate(panel);
+      });
+      // Teclado: focar o link de um painel recolhido o abre.
+      panel.addEventListener('focusin', () => activate(panel));
+    });
+
+    const fromHash = () => {
+      const panel = panels.find((p) => `#${p.id}` === window.location.hash);
+      if (panel) activate(panel);
+    };
+    window.addEventListener('hashchange', fromHash);
+    fromHash();
+  }
+</script>

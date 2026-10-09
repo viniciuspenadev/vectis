@@ -1,0 +1,294 @@
+---
+/**
+ * Rede global: mapa-múndi pontilhado gerado no build (um único <path>),
+ * rotas partindo da sede em São Paulo e "cargas" percorrendo cada rota.
+ * As animações pausam quando a seção sai da tela.
+ */
+import DottedMap from 'dotted-map';
+import { getLocale } from '../../i18n/utils';
+import { homeCopy } from '../../i18n/home';
+
+const t = homeCopy[getLocale(Astro.url)].network;
+
+const map = new DottedMap({
+  height: 60,
+  grid: 'diagonal',
+  projection: { name: 'robinson' },
+  region: { lat: { min: -56, max: 78 }, lng: { min: -180, max: 180 } },
+});
+
+const points = map.getPoints();
+const width = Math.ceil(Math.max(...points.map((p) => p.x)) + 0.5);
+const height = Math.ceil(Math.max(...points.map((p) => p.y)) + 0.5);
+const r2 = (n: number) => Math.round(n * 100) / 100;
+const dots = points.map((p) => `M${r2(p.x)} ${r2(p.y)}h0`).join('');
+
+type CityKey = keyof typeof t.cities;
+type Side = 'l' | 'r' | 't' | 'b';
+
+const hubs: { key: CityKey; lat: number; lng: number; side: Side }[] = [
+  { key: 'miami', lat: 25.76, lng: -80.19, side: 'r' },
+  { key: 'newYork', lat: 40.71, lng: -74.0, side: 'r' },
+  { key: 'losAngeles', lat: 34.05, lng: -118.24, side: 'l' },
+  { key: 'mexicoCity', lat: 19.43, lng: -99.13, side: 'l' },
+  { key: 'buenosAires', lat: -34.6, lng: -58.38, side: 'r' },
+  { key: 'santiago', lat: -33.45, lng: -70.67, side: 'l' },
+  { key: 'rotterdam', lat: 51.92, lng: 4.48, side: 'l' },
+  { key: 'valencia', lat: 39.47, lng: -0.38, side: 'l' },
+  { key: 'dubai', lat: 25.2, lng: 55.27, side: 'l' },
+  { key: 'mumbai', lat: 19.07, lng: 72.88, side: 'b' },
+  { key: 'shanghai', lat: 31.23, lng: 121.47, side: 'r' },
+  { key: 'singapore', lat: 1.35, lng: 103.82, side: 'r' },
+  { key: 'johannesburg', lat: -26.2, lng: 28.05, side: 'r' },
+  { key: 'sydney', lat: -33.87, lng: 151.21, side: 'l' },
+];
+
+/** Posição no mapa (encaixada no ponto mais próximo); falha o build se cair fora do recorte. */
+function pinAt(lat: number, lng: number) {
+  const pin = map.getPin({ lat, lng });
+  if (!pin) throw new Error(`Coordenada fora do mapa: ${lat}, ${lng}`);
+  return pin;
+}
+
+const hq = pinAt(-23.55, -46.63);
+
+const routes = hubs.map((hub, i) => {
+  const pin = pinAt(hub.lat, hub.lng);
+  const dx = pin.x - hq.x;
+  const dy = pin.y - hq.y;
+  const dist = Math.hypot(dx, dy);
+  // Ponto de controle deslocado "para cima" do meio da rota → arco suave.
+  let nx = -dy / dist;
+  let ny = dx / dist;
+  if (ny > 0) {
+    nx = -nx;
+    ny = -ny;
+  }
+  const lift = dist * 0.28;
+  const cx = (hq.x + pin.x) / 2 + nx * lift;
+  const cy = (hq.y + pin.y) / 2 + ny * lift;
+  return {
+    ...hub,
+    x: pin.x,
+    y: pin.y,
+    d: `M${r2(hq.x)} ${r2(hq.y)}Q${r2(cx)} ${r2(cy)} ${r2(pin.x)} ${r2(pin.y)}`,
+    dur: r2(2.6 + dist / 22),
+    begin: r2(1.4 + i * 0.45),
+  };
+});
+
+const pct = (v: number, total: number) => `${((v / total) * 100).toFixed(3)}%`;
+---
+
+<section id="network" class="relative overflow-hidden bg-navy-950 py-24 text-white md:py-32" data-network>
+  <div class="pointer-events-none absolute inset-x-0 top-1/3 h-[36rem] bg-[radial-gradient(ellipse_at_center,rgb(47_166_240/0.10),transparent_65%)]" aria-hidden="true"></div>
+
+  <div class="container-x relative">
+    <div class="grid gap-8 lg:grid-cols-12 lg:items-end">
+      <div class="lg:col-span-6">
+        <p class="eyebrow flex items-center gap-3 text-ice-300" data-reveal="left">
+          {t.eyebrow}
+        </p>
+        <h2 class="heading-brand mt-6 text-[clamp(1.85rem,3.8vw,3.35rem)] text-white" data-reveal>
+          {t.title[0]}<br /><span class="text-metal">{t.title[1]}</span>
+        </h2>
+      </div>
+      <p class="leading-relaxed text-steel-300 lg:col-span-5 lg:col-start-8" data-reveal data-reveal-delay="120">
+        {t.text}
+      </p>
+    </div>
+
+    <figure class="net-map relative -mx-[38%] mt-12 md:mx-0 md:mt-20" aria-hidden="true" data-reveal="fade">
+      <svg viewBox={`0 0 ${width} ${height}`} class="block h-auto w-full overflow-visible" preserveAspectRatio="xMidYMid meet">
+        <path d={dots} class="net-dots" />
+
+        <g class="net-routes">
+          {
+            routes.map((route, i) => (
+              <path id={`route-${route.key}`} d={route.d} pathLength="1" class="net-route" style={`--i:${i}`} />
+            ))
+          }
+        </g>
+
+        <g class="net-cargo">
+          {
+            routes.map((route) => (
+              <g opacity="0">
+                <circle r="1.1" class="fill-ice-400/25" />
+                <circle r="0.36" class="fill-white" />
+                <animateMotion dur={`${route.dur}s`} begin={`${route.begin}s`} repeatCount="indefinite" calcMode="spline" keyTimes="0;1" keySplines="0.45 0 0.55 1">
+                  <mpath href={`#route-${route.key}`} />
+                </animateMotion>
+                <animate
+                  attributeName="opacity"
+                  values="0;1;1;0"
+                  keyTimes="0;0.12;0.85;1"
+                  dur={`${route.dur}s`}
+                  begin={`${route.begin}s`}
+                  repeatCount="indefinite"
+                />
+              </g>
+            ))
+          }
+        </g>
+
+        <g>
+          {
+            routes.map((route) => (
+              <g>
+                <circle cx={route.x} cy={route.y} r="0.95" class="fill-none stroke-ice-400/40" stroke-width="0.12" />
+                <circle cx={route.x} cy={route.y} r="0.42" class="fill-ice-300" />
+              </g>
+            ))
+          }
+          <circle cx={hq.x} cy={hq.y} r="1.2" class="net-pulse fill-ice-400/30" />
+          <circle cx={hq.x} cy={hq.y} r="1.2" class="net-pulse net-pulse-2 fill-ice-400/30" />
+          <circle cx={hq.x} cy={hq.y} r="0.75" class="fill-white" />
+        </g>
+      </svg>
+
+      <!-- Rótulos em HTML: nítidos em qualquer largura. -->
+      {
+        routes.map((route) => (
+          <span
+            class={`net-label net-${route.side} hidden md:block`}
+            style={`left:${pct(route.x, width)};top:${pct(route.y, height)}`}
+          >
+            {t.cities[route.key]}
+          </span>
+        ))
+      }
+      <span class="net-label net-hq net-r" style={`left:${pct(hq.x, width)};top:${pct(hq.y, height)}`}>
+        <strong class="block font-semibold text-white">{t.cities.saoPaulo}</strong>
+        <span class="text-ice-300">{t.hq}</span>
+      </span>
+    </figure>
+
+  </div>
+</section>
+
+<style>
+  .net-dots {
+    fill: none;
+    stroke: rgb(155 165 180 / 0.32);
+    stroke-width: 0.38;
+    stroke-linecap: round;
+  }
+
+  .net-route {
+    fill: none;
+    stroke: rgb(95 194 255 / 0.45);
+    stroke-width: 0.16;
+    stroke-linecap: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 2.2s var(--ease-out-expo);
+    transition-delay: calc(var(--i) * 90ms + 200ms);
+  }
+
+  .net-map.is-in .net-route,
+  :global(html:not(.js)) .net-route {
+    stroke-dashoffset: 0;
+  }
+
+  .net-pulse {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: net-pulse 2.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  .net-pulse-2 {
+    animation-delay: 1.4s;
+  }
+
+  @keyframes net-pulse {
+    0% {
+      transform: scale(0.6);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(3.2);
+      opacity: 0;
+    }
+  }
+
+  [data-network].is-paused .net-pulse {
+    animation-play-state: paused;
+  }
+
+  .net-label {
+    position: absolute;
+    translate: 0 -50%;
+    white-space: nowrap;
+    pointer-events: none;
+    font-family: var(--font-display);
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgb(219 224 231 / 0.75);
+  }
+
+  .net-r {
+    margin-left: 0.85rem;
+  }
+
+  .net-l {
+    translate: -100% -50%;
+    margin-left: -0.85rem;
+  }
+
+  .net-t {
+    translate: -50% -100%;
+    margin-top: -0.7rem;
+  }
+
+  .net-b {
+    translate: -50% 0;
+    margin-top: 0.7rem;
+  }
+
+  .net-hq {
+    font-size: 0.6875rem;
+    line-height: 1.5;
+    margin-left: 1.1rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .net-route {
+      transition: none;
+      stroke-dashoffset: 0;
+    }
+
+    .net-pulse {
+      animation: none;
+      opacity: 0;
+    }
+
+    .net-cargo {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const section = document.querySelector<HTMLElement>('[data-network]');
+
+  if (section) {
+    const svg = section.querySelector('svg');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Pausa SMIL + CSS fora da tela (não compete com o scroll de outras seções).
+    if (svg) {
+      new IntersectionObserver(
+        ([entry]) => {
+          const paused = !entry.isIntersecting || reduceMotion;
+          section.classList.toggle('is-paused', paused);
+          if (paused) svg.pauseAnimations();
+          else svg.unpauseAnimations();
+        },
+        { rootMargin: '120px' },
+      ).observe(section);
+    }
+  }
+</script>

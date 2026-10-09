@@ -1,0 +1,42 @@
+---
+import { Image } from 'astro:assets';
+import Icon from '../Icon.astro';
+import earth from '../../assets/images/cta-earth.jpg';
+import mark from '../../assets/brand/vectis-mark.png';
+import { getLocale } from '../../i18n/utils';
+import { homeCopy } from '../../i18n/home';
+
+const t = homeCopy[getLocale(Astro.url)].final;
+---
+
+<section class="grain relative isolate overflow-hidden bg-navy-950 py-28 text-white md:py-40" aria-labelledby="final-title">
+  <Image
+    src={earth}
+    alt=""
+    widths={[800, 1400, 2000, 2400]}
+    sizes="100vw"
+    class="absolute inset-0 -z-20 h-full w-full object-cover object-[30%_70%] opacity-70"
+  />
+  <div class="absolute inset-0 -z-10 bg-[#0b2a55] opacity-40 mix-blend-color" aria-hidden="true"></div>
+  <div class="absolute inset-0 -z-10 bg-[linear-gradient(180deg,var(--color-navy-950)_0%,rgb(5_11_22/0.45)_40%,rgb(5_11_22/0.55)_70%,var(--color-navy-950)_100%)]" aria-hidden="true"></div>
+
+  <div class="container-x text-center">
+    <Image src={mark} alt="" width={88} densities={[1.5, 2]} class="mx-auto h-auto w-14 md:w-[4.5rem]" data-reveal />
+    <p
+      id="final-title"
+      class="text-metal mt-10 font-display text-[clamp(2.1rem,6.2vw,6rem)] font-light uppercase leading-[1.05] tracking-[0.14em]"
+      lang="en"
+      data-reveal
+      data-reveal-delay="100"
+    >
+      The way forward.
+    </p>
+    <p class="eyebrow mt-8 leading-loose tracking-[0.26em] text-steel-200" data-reveal data-reveal-delay="200">
+      {t.statement[0]}<br />{t.statement[1]}
+    </p>
+    <a href="#contact" class="btn btn-outline mt-12" data-reveal data-reveal-delay="300">
+      {t.cta}
+      <Icon name="arrow-right" size={15} />
+    </a>
+  </div>
+</section>

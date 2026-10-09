@@ -1,0 +1,75 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from './Hero.astro';
+import About from './About.astro';
+import Services from './Services.astro';
+import Process from './Process.astro';
+import Network from './Network.astro';
+import Industries from './Industries.astro';
+import FinalCta from './FinalCta.astro';
+import Contact from './Contact.astro';
+import Faq from './Faq.astro';
+import { getLocale, localizePath } from '../../i18n/utils';
+import { localeMeta } from '../../i18n/config';
+import { homeCopy } from '../../i18n/home';
+import { site } from '../../data/site';
+
+const locale = getLocale(Astro.url);
+const t = homeCopy[locale];
+const siteUrl = (Astro.site ?? new URL(site.url)).href.replace(/\/$/, '');
+const pageUrl = `${siteUrl}${localizePath('/', locale)}`;
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': `${siteUrl}/#organization`,
+    name: site.name,
+    alternateName: site.shortName,
+    slogan: 'The way forward.',
+    url: `${siteUrl}/`,
+    logo: `${siteUrl}/images/vectis-logo.png`,
+    email: site.email,
+    telephone: site.phoneHref,
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: site.address.city,
+      addressRegion: site.address.region,
+      addressCountry: site.address.country,
+    },
+    sameAs: [site.social.linkedin, site.social.instagram],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${siteUrl}/#website`,
+    url: `${siteUrl}/`,
+    name: site.name,
+    inLanguage: localeMeta[locale].htmlLang,
+    publisher: { '@id': `${siteUrl}/#organization` },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    url: pageUrl,
+    inLanguage: localeMeta[locale].htmlLang,
+    mainEntity: t.faq.items.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+  },
+];
+---
+
+<BaseLayout title={t.meta.title} description={t.meta.description} jsonLd={jsonLd}>
+  <Hero />
+  <About />
+  <Services />
+  <Process />
+  <Network />
+  <Industries />
+  <FinalCta />
+  <Contact />
+  <Faq />
+</BaseLayout>

@@ -1,0 +1,95 @@
+---
+/**
+ * Layout base: <head> com SEO, fontes self-hosted e componentes globais
+ * (navbar, rodapé, WhatsApp e consentimento de cookies).
+ */
+import '@fontsource-variable/montserrat';
+import '@fontsource-variable/inter';
+import '../styles/global.css';
+import montserratLatin from '@fontsource-variable/montserrat/files/montserrat-latin-wght-normal.woff2?url';
+import interLatin from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+
+import SEO from '../components/SEO.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import CookieConsent from '../components/CookieConsent.astro';
+import { getLocale } from '../i18n/utils';
+import { localeMeta } from '../i18n/config';
+import { ui } from '../i18n/ui';
+import { site } from '../data/site';
+import { SITE_NOINDEX } from 'astro:env/server';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: ImageMetadata;
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown>[];
+}
+
+const { title, description, image, noindex, jsonLd } = Astro.props;
+const locale = getLocale(Astro.url);
+const t = ui[locale];
+---
+
+<!doctype html>
+<html lang={localeMeta[locale].htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#050b16" />
+    <meta name="color-scheme" content="dark light" />
+
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+
+    {
+      site.gaId && (
+        <script is:inline define:vars={{ gaId: site.gaId }}>
+          window.dataLayer = window.dataLayer || [];
+          window.gtag = function () { dataLayer.push(arguments); };
+          gtag('consent', 'default', {
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            analytics_storage: 'denied',
+            wait_for_update: 500,
+          });
+          window.__GA_ID__ = gaId;
+        </script>
+      )
+    }
+
+    <SEO title={title} description={description} image={image} noindex={noindex || SITE_NOINDEX} jsonLd={jsonLd} />
+
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preload" href={montserratLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
+
+    <slot name="head" />
+  </head>
+
+  <body class="overflow-x-clip">
+    <a
+      href="#content"
+      class="eyebrow fixed left-4 top-4 z-[200] -translate-y-24 bg-white px-5 py-3 text-navy-950 transition-transform focus:translate-y-0"
+    >
+      {t.skip}
+    </a>
+
+    <Navbar />
+    <main id="content">
+      <slot />
+    </main>
+    <Footer />
+    <WhatsAppButton />
+    <CookieConsent />
+
+    <script>
+      import '../scripts/reveal';
+    </script>
+  </body>
+</html>

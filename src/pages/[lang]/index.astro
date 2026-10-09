@@ -1,0 +1,11 @@
+---
+/** Home nos idiomas com prefixo (/en/, /es/). O idioma padrão fica em ../index.astro. */
+import HomePage from '../../components/home/HomePage.astro';
+import { prefixedLocales } from '../../i18n/utils';
+
+export function getStaticPaths() {
+  return prefixedLocales.map((lang) => ({ params: { lang } }));
+}
+---
+
+<HomePage />

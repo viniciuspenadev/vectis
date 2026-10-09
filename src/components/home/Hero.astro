@@ -1,0 +1,549 @@
+---
+/**
+ * Hero em tela cheia com 4 cenas (marítimo, aéreo, rodoviário, global).
+ * - 1ª imagem com prioridade (LCP); as demais só carregam após o `load`.
+ * - Autoplay com cronômetro em CSS; pausa fora da tela, com a aba oculta,
+ *   no foco dos controles e no botão de pausa (visível só via teclado — WCAG 2.2.2).
+ * - Respeita prefers-reduced-motion (sem autoplay nem zoom).
+ */
+import { Image, Picture, getImage } from 'astro:assets';
+import Icon from '../Icon.astro';
+import heroOcean from '../../assets/images/hero-ocean.jpg';
+import heroAir from '../../assets/images/hero-air.jpg';
+import heroRoad from '../../assets/images/hero-road.jpg';
+import heroGlobal from '../../assets/images/hero-global.jpg';
+import mark from '../../assets/brand/vectis-mark.png';
+import { getLocale, localizePath } from '../../i18n/utils';
+import { homeCopy } from '../../i18n/home';
+
+const locale = getLocale(Astro.url);
+const t = homeCopy[locale].hero;
+const home = localizePath('/', locale);
+
+const widths = [640, 1024, 1440, 1920, 2400];
+const scenes = [
+  { src: heroOcean, position: '62% 50%', mobile: '62% 50%' },
+  { src: heroAir, position: '58% 55%', mobile: '56% 50%' },
+  { src: heroRoad, position: '66% 50%', mobile: '48% 50%' },
+  { src: heroGlobal, position: '50% 62%', mobile: '50% 45%' },
+];
+const framing = (s: (typeof scenes)[number]) => `--pos:${s.position};--pos-m:${s.mobile}`;
+
+const lazyScenes = await Promise.all(
+  scenes.slice(1).map((s) => getImage({ src: s.src, widths, sizes: '100vw', format: 'webp', quality: 72 })),
+);
+const total = scenes.length;
+---
+
+<section
+  id="top"
+  class="hero grain relative isolate flex h-[100svh] min-h-[640px] flex-col overflow-hidden bg-navy-950 text-white"
+  aria-roledescription="carousel"
+  aria-label={t.label}
+  data-hero
+  data-paused="false"
+>
+  <h1 class="sr-only">{t.h1}</h1>
+
+  <!-- Cenas -->
+  <div class="absolute inset-0 -z-10" aria-hidden="true">
+    <div class="hero-scene" data-active="true">
+      <Picture
+        src={scenes[0].src}
+        formats={['avif', 'webp']}
+        widths={widths}
+        sizes="100vw"
+        quality={72}
+        alt=""
+        priority
+        class="hero-img"
+        style={framing(scenes[0])}
+      />
+    </div>
+    {
+      lazyScenes.map((img, i) => (
+        <div class="hero-scene" data-active="false">
+          <img
+            data-src={img.src}
+            data-srcset={img.srcSet.attribute}
+            sizes="100vw"
+            alt=""
+            width={img.attributes.width}
+            height={img.attributes.height}
+            decoding="async"
+            class="hero-img"
+            style={framing(scenes[i + 1])}
+          />
+        </div>
+      ))
+    }
+    <div class="hero-tint absolute inset-0"></div>
+    <div class="hero-shade absolute inset-0"></div>
+  </div>
+
+  <!-- Símbolo V (telas ≥ 1024px): camada fixa sobre as fotos e abaixo do texto; não participa da troca de cenas.
+       loading="lazy": no celular fica oculto e a imagem nem é baixada. -->
+  <div class="hero-mark pointer-events-none absolute inset-0 -z-[5]" aria-hidden="true">
+    <Image
+      src={mark}
+      alt=""
+      widths={[200, 358]}
+      sizes="22vw"
+      loading="lazy"
+      decoding="async"
+      class="hero-mark-img"
+    />
+  </div>
+
+  <!-- Conteúdo -->
+  <div class="hero-content container-x relative flex flex-1 flex-col justify-center pb-20 pt-24 md:pb-24 md:pt-40">
+    <div class="max-w-[66rem] lg:max-w-[min(66rem,64vw)]">
+      <div class="grid" aria-live="off">
+        {
+          t.slides.map((slide, i) => (
+            <div
+              class="hero-text self-end [grid-area:1/1]"
+              data-active={String(i === 0)}
+              aria-hidden={i === 0 ? undefined : 'true'}
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${i + 1} / ${total}: ${slide.label}`}
+            >
+              <p class="eyebrow flex items-center gap-4 text-ice-300">
+                <span class="hero-fade">{slide.eyebrow}</span>
+              </p>
+              <h2 class="hero-title heading-brand mt-5 text-[clamp(1.6rem,7.4vw,2.4rem)] !leading-[1.1] !tracking-[0.035em] sm:mt-6 sm:text-[clamp(1.9rem,3.9vw,3.6rem)] sm:!tracking-[0.06em]">
+                <span class="hero-line">
+                  <span>{slide.title[0]}</span>
+                </span>
+                <span class="hero-line">
+                  <span class="text-metal">{slide.title[1]}</span>
+                </span>
+              </h2>
+              <p class="hero-fade hero-desc mt-5 max-w-xl text-[15px] font-light leading-relaxed text-steel-200 sm:mt-7 sm:text-base md:text-lg">
+                {slide.text}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="hero-cta mt-8 flex flex-wrap items-center gap-x-8 gap-y-5 sm:mt-10">
+        <a href={`${home}#contact`} class="btn btn-outline">
+          {t.cta}
+          <Icon name="arrow-right" size={15} />
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pilares da marca (como no brand board) -->
+  <ul
+    class="eyebrow pointer-events-none absolute bottom-10 right-10 hidden space-y-2 text-right !text-[10px] !tracking-[0.36em] text-white/55 2xl:block min-[1700px]:right-16"
+    aria-hidden="true"
+  >
+    {t.pillars.map((p) => <li>{p}</li>)}
+  </ul>
+
+  <!-- Controles: bolinhas (o botão de pausa só aparece no foco via teclado) -->
+  <div class="container-x absolute inset-x-0 bottom-0 pb-8 md:pb-10">
+    <div class="-ml-2 flex items-center">
+      {
+        t.slides.map((slide, i) => (
+          <button
+            type="button"
+            class="hero-dot grid size-7 place-items-center"
+            data-goto={i}
+            aria-label={`${t.goTo} ${i + 1}: ${slide.label}`}
+            aria-current={i === 0 ? 'true' : undefined}
+          >
+            <span class="hero-dot-mark" aria-hidden="true" />
+            <span class="hero-timer" aria-hidden="true" />
+          </button>
+        ))
+      }
+      <button
+        type="button"
+        class="hero-pause sr-only ml-3 place-items-center rounded-full text-white focus-visible:not-sr-only focus-visible:!grid focus-visible:size-8 focus-visible:border focus-visible:border-white/40"
+        aria-label={t.pause}
+        data-label-pause={t.pause}
+        data-label-play={t.play}
+        data-pause
+      >
+        <svg class="icon-pause" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
+          <rect x="1.5" y="1" width="2" height="8" fill="currentColor" />
+          <rect x="6.5" y="1" width="2" height="8" fill="currentColor" />
+        </svg>
+        <svg class="icon-play" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
+          <path d="M2.5 1.2v7.6L8.6 5z" fill="currentColor" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    --hero-duration: 7000ms;
+  }
+
+  /* ---------- Cenas ---------- */
+  .hero-scene {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hero-scene[data-active='true'] {
+    opacity: 1;
+  }
+
+  .hero-scene :global(picture) {
+    display: contents;
+  }
+
+  .hero-scene :global(.hero-img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--pos-m, var(--pos));
+    scale: 1.12;
+    transition: scale 0s linear 1.6s;
+  }
+
+  .hero-scene[data-active='true'] :global(.hero-img) {
+    scale: 1;
+    transition: scale 10s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  @media (width >= 48rem) {
+    .hero-scene :global(.hero-img) {
+      object-position: var(--pos);
+    }
+  }
+
+  /* Celular deitado (tela baixa): hero do tamanho da tela, sem descrição. */
+  @media (orientation: landscape) and (max-height: 32rem) {
+    .hero {
+      min-height: 100svh;
+    }
+
+    .hero-content {
+      justify-content: flex-end;
+      padding-top: 5rem;
+      padding-bottom: 4.75rem;
+    }
+
+    .hero-title {
+      margin-top: 0.75rem;
+      font-size: clamp(1.2rem, 3vw, 1.75rem);
+    }
+
+    /* Seletor composto: precisa vencer o display de .hero-fade, declarado mais abaixo. */
+    .hero-text .hero-desc {
+      display: none;
+    }
+
+    .hero-cta {
+      margin-top: 1.25rem;
+    }
+
+    .hero-cta :global(.btn) {
+      padding-block: 0.8rem;
+    }
+  }
+
+  /* ---------- Símbolo V (só em telas grandes) ---------- */
+  .hero-mark {
+    display: none;
+  }
+
+  @media (width >= 64rem) {
+    /* Mesmo deslocamento do bloco de texto (pt-40/pb-24), para os dois ficarem alinhados. */
+    .hero-mark {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 4rem 7vw 0 0;
+    }
+
+    .hero-mark :global(.hero-mark-img) {
+      width: clamp(13rem, 22vw, 22rem);
+      height: auto;
+      filter: drop-shadow(0 24px 48px rgb(0 0 0 / 0.55)) drop-shadow(0 0 40px rgb(95 194 255 / 0.18));
+    }
+  }
+
+  /* Unifica as fotos no tom navy da marca. */
+  .hero-tint {
+    background: #0b2a55;
+    mix-blend-mode: color;
+    opacity: 0.5;
+  }
+
+  .hero-shade {
+    background:
+      linear-gradient(90deg, rgb(5 11 22 / 0.9) 0%, rgb(5 11 22 / 0.7) 42%, rgb(5 11 22 / 0.22) 78%, rgb(5 11 22 / 0.3) 100%),
+      linear-gradient(0deg, rgb(5 11 22 / 0.95) 0%, rgb(5 11 22 / 0.4) 22%, transparent 45%);
+  }
+
+  /* Celular: texto no meio da tela, então o escurecimento é mais uniforme. */
+  @media (width < 48rem) {
+    .hero-shade {
+      background:
+        linear-gradient(0deg, rgb(5 11 22 / 0.92) 0%, rgb(5 11 22 / 0.72) 35%, rgb(5 11 22 / 0.6) 65%, rgb(5 11 22 / 0.55) 100%);
+    }
+  }
+
+  /* ---------- Texto ---------- */
+  .hero-text {
+    visibility: hidden;
+    transition: visibility 0s linear 0.6s;
+  }
+
+  .hero-text[data-active='true'] {
+    visibility: visible;
+    transition: none;
+  }
+
+  .hero-line {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.06em;
+  }
+
+  .hero-line > span {
+    display: inline-block;
+    translate: 0 108%;
+    transition: translate 0.5s cubic-bezier(0.7, 0, 0.84, 0);
+  }
+
+  .hero-text[data-active='true'] .hero-line > span {
+    translate: 0 0;
+    transition: translate 1.2s var(--ease-out-expo) 0.35s;
+  }
+
+  .hero-text[data-active='true'] .hero-line + .hero-line > span {
+    transition-delay: 0.5s;
+  }
+
+  .hero-fade {
+    display: inline-block;
+    opacity: 0;
+    translate: 0 0.75rem;
+    transition:
+      opacity 0.4s ease,
+      translate 0.4s ease;
+  }
+
+  .hero-text[data-active='true'] .hero-fade {
+    opacity: 1;
+    translate: 0 0;
+    transition:
+      opacity 1s ease 0.75s,
+      translate 1.2s var(--ease-out-expo) 0.75s;
+  }
+
+  .hero-text[data-active='true'] p .hero-fade {
+    transition-delay: 0.2s;
+  }
+
+  /* Entrada da CTA no primeiro carregamento. */
+  .hero-cta {
+    animation: hero-in 1.2s var(--ease-out-expo) 1s both;
+  }
+
+  @keyframes hero-in {
+    from {
+      opacity: 0;
+      translate: 0 1rem;
+    }
+  }
+
+  /* ---------- Controles ---------- */
+  .hero-dot-mark {
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: 9999px;
+    border: 1px solid rgb(255 255 255 / 0.6);
+    transition:
+      background-color 0.4s ease,
+      border-color 0.4s ease,
+      scale 0.4s var(--ease-out-expo);
+  }
+
+  .hero-dot:hover .hero-dot-mark {
+    border-color: #fff;
+  }
+
+  .hero-dot[aria-current='true'] .hero-dot-mark {
+    background-color: #fff;
+    border-color: #fff;
+    scale: 1.15;
+  }
+
+  /* Cronômetro invisível: o fim da animação avança o slide (e pausá-la pausa o slider). */
+  .hero-timer {
+    position: absolute;
+    width: 0;
+    height: 0;
+  }
+
+  .hero-dot {
+    position: relative;
+  }
+
+  .hero-dot[aria-current='true'] .hero-timer {
+    animation: hero-timer var(--hero-duration) linear forwards;
+  }
+
+  .hero[data-paused='true'] .hero-dot[aria-current='true'] .hero-timer {
+    animation-play-state: paused;
+  }
+
+  .hero[data-static='true'] .hero-timer {
+    animation: none !important;
+  }
+
+  @keyframes hero-timer {
+    to {
+      opacity: 0;
+    }
+  }
+
+  .hero-pause .icon-play,
+  .hero[data-user-paused='true'] .hero-pause .icon-pause {
+    display: none;
+  }
+
+  .hero[data-user-paused='true'] .hero-pause .icon-play {
+    display: block;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-scene,
+    .hero-scene :global(.hero-img),
+    .hero-line > span,
+    .hero-fade {
+      transition: none !important;
+    }
+
+    .hero-scene :global(.hero-img) {
+      scale: 1;
+    }
+
+    .hero-cta {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+
+  if (hero) {
+    const scenes = [...hero.querySelectorAll<HTMLElement>('.hero-scene')];
+    const texts = [...hero.querySelectorAll<HTMLElement>('.hero-text')];
+    const segs = [...hero.querySelectorAll<HTMLButtonElement>('[data-goto]')];
+    const pauseBtn = hero.querySelector<HTMLButtonElement>('[data-pause]');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const total = scenes.length;
+
+    let index = 0;
+    let userPaused = false;
+    let offscreen = false;
+    let focusInside = false;
+
+    if (reduceMotion) hero.dataset.static = 'true';
+
+    const syncPaused = () => {
+      hero.dataset.paused = String(userPaused || offscreen || focusInside || document.hidden);
+    };
+
+    function go(next: number) {
+      index = (next + total) % total;
+      scenes.forEach((el, i) => (el.dataset.active = String(i === index)));
+      texts.forEach((el, i) => {
+        el.dataset.active = String(i === index);
+        if (i === index) el.removeAttribute('aria-hidden');
+        else el.setAttribute('aria-hidden', 'true');
+      });
+      segs.forEach((el, i) => {
+        if (i === index) el.setAttribute('aria-current', 'true');
+        else el.removeAttribute('aria-current');
+      });
+    }
+
+    // Avança quando o cronômetro (animação CSS) termina: pausar a animação pausa o slider.
+    segs.forEach((seg, i) => {
+      seg.addEventListener('click', () => go(i));
+      seg.querySelector('.hero-timer')?.addEventListener('animationend', () => {
+        if (i === index && !reduceMotion) go(index + 1);
+      });
+    });
+
+    pauseBtn?.addEventListener('click', () => {
+      userPaused = !userPaused;
+      hero.dataset.userPaused = String(userPaused);
+      pauseBtn.setAttribute('aria-label', (userPaused ? pauseBtn.dataset.labelPlay : pauseBtn.dataset.labelPause) ?? '');
+      syncPaused();
+    });
+
+    // Pausa enquanto o teclado navega pelos controles do hero.
+    hero.addEventListener('focusin', (e) => {
+      focusInside = (e.target as HTMLElement).matches(':focus-visible');
+      syncPaused();
+    });
+    hero.addEventListener('focusout', () => {
+      focusInside = false;
+      syncPaused();
+    });
+
+    document.addEventListener('visibilitychange', syncPaused);
+
+    new IntersectionObserver(([entry]) => {
+      offscreen = !entry.isIntersecting;
+      syncPaused();
+    }).observe(hero);
+
+    // Swipe horizontal no mobile.
+    let startX: number | null = null;
+    let startY = 0;
+    hero.addEventListener(
+      'touchstart',
+      (e) => {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+      },
+      { passive: true },
+    );
+    hero.addEventListener(
+      'touchend',
+      (e) => {
+        if (startX === null) return;
+        const dx = e.changedTouches[0].clientX - startX;
+        const dy = e.changedTouches[0].clientY - startY;
+        startX = null;
+        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) go(index + (dx < 0 ? 1 : -1));
+      },
+      { passive: true },
+    );
+
+    // Cenas 2–4 fora do caminho do LCP: só baixam depois do `load`.
+    const loadLazy = () =>
+      hero.querySelectorAll<HTMLImageElement>('img[data-src]').forEach((img) => {
+        img.srcset = img.dataset.srcset ?? '';
+        img.src = img.dataset.src ?? '';
+        img.removeAttribute('data-src');
+      });
+
+    if (document.readyState === 'complete') loadLazy();
+    else window.addEventListener('load', loadLazy, { once: true });
+
+    syncPaused();
+  }
+</script>

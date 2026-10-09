@@ -1,0 +1,55 @@
+---
+/**
+ * Metatags por página: title, description, canonical, hreflang, OpenGraph,
+ * Twitter e dados estruturados (JSON-LD).
+ */
+import { getImage } from 'astro:assets';
+import { getAlternates, getLocale } from '../i18n/utils';
+import { defaultLocale, localeMeta } from '../i18n/config';
+import { site } from '../data/site';
+import ogDefault from '../assets/images/hero-ocean.jpg';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: ImageMetadata;
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown>[];
+}
+
+const { title, description, image = ogDefault, noindex = false, jsonLd = [] } = Astro.props;
+
+const siteUrl = Astro.site ?? new URL(site.url);
+const locale = getLocale(Astro.url);
+const canonical = new URL(Astro.url.pathname, siteUrl).href;
+const alternates = getAlternates(Astro.url, siteUrl);
+const xDefault = alternates.find((a) => a.locale === defaultLocale)?.href;
+
+const og = await getImage({ src: image, width: 1200, height: 630, fit: 'cover', format: 'jpg', quality: 80 });
+const ogUrl = new URL(og.src, siteUrl).href;
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+{noindex && <meta name="robots" content="noindex, follow" />}
+<link rel="canonical" href={canonical} />
+
+{alternates.map((alt) => <link rel="alternate" hreflang={localeMeta[alt.locale].htmlLang} href={alt.href} />)}
+<link rel="alternate" hreflang="x-default" href={xDefault} />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogUrl} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:locale" content={localeMeta[locale].og} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogUrl} />
+
+{jsonLd.map((data) => <script type="application/ld+json" set:html={JSON.stringify(data)} />)}

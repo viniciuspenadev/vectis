@@ -1,0 +1,118 @@
+---
+/**
+ * Consentimento de cookies (LGPD). Opt-in: o Google Analytics só carrega
+ * depois de "Aceitar" e apenas se `site.gaId` estiver configurado
+ * (Consent Mode v2 inicializado no BaseLayout).
+ */
+import { getLocale } from '../i18n/utils';
+import { ui } from '../i18n/ui';
+import { site } from '../data/site';
+
+const locale = getLocale(Astro.url);
+const t = ui[locale].cookie;
+---
+
+<div
+  class="cookie-card fixed inset-x-4 bottom-4 z-[80] max-w-sm border border-white/10 bg-navy-900/95 p-5 sm:p-6 shadow-[0_30px_80px_-20px_rgb(0_0_0/0.8)] backdrop-blur-xl sm:inset-x-auto sm:bottom-7 sm:left-7"
+  role="dialog"
+  aria-labelledby="cookie-title"
+  aria-describedby="cookie-text"
+  data-open="false"
+  data-cookie
+  inert
+>
+  <p id="cookie-title" class="eyebrow text-white">{t.title}</p>
+  <p id="cookie-text" class="mt-3 text-sm leading-relaxed text-steel-300">
+    {t.text}{' '}
+    <a href={site.privacyPath[locale]} class="text-white underline decoration-white/30 underline-offset-4 hover:decoration-white">
+      {t.policy}
+    </a>.
+  </p>
+  <div class="mt-5 flex flex-wrap gap-3">
+    <button type="button" class="btn btn-metal !px-5 !py-3" data-consent="all">{t.accept}</button>
+    <button type="button" class="btn btn-outline !px-5 !py-3" data-consent="essential">{t.essential}</button>
+  </div>
+</div>
+
+<style>
+  .cookie-card {
+    opacity: 0;
+    visibility: hidden;
+    translate: 0 1.5rem;
+    transition:
+      opacity 0.5s var(--ease-out-expo),
+      translate 0.6s var(--ease-out-expo),
+      visibility 0.5s;
+  }
+
+  .cookie-card[data-open='true'] {
+    opacity: 1;
+    visibility: visible;
+    translate: 0 0;
+  }
+
+  :global(html.cookie-open .wa-button) {
+    @media (width < 40rem) {
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+  }
+</style>
+
+<script>
+  type Consent = 'all' | 'essential';
+  const KEY = 'vectis-consent';
+  const card = document.querySelector<HTMLElement>('[data-cookie]');
+
+  function read(): Consent | null {
+    try {
+      const v = localStorage.getItem(KEY);
+      return v === 'all' || v === 'essential' ? v : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function write(v: Consent) {
+    try {
+      localStorage.setItem(KEY, v);
+    } catch {
+      /* armazenamento indisponível: vale só para esta visita */
+    }
+  }
+
+  function loadAnalytics() {
+    const w = window as unknown as { __GA_ID__?: string; gtag?: (...args: unknown[]) => void };
+    if (!w.__GA_ID__ || !w.gtag || document.getElementById('ga-script')) return;
+    w.gtag('consent', 'update', { analytics_storage: 'granted' });
+    const s = document.createElement('script');
+    s.id = 'ga-script';
+    s.async = true;
+    s.src = `https://www.googletagmanager.com/gtag/js?id=${w.__GA_ID__}`;
+    document.head.appendChild(s);
+    w.gtag('js', new Date());
+    w.gtag('config', w.__GA_ID__);
+  }
+
+  function show(open: boolean) {
+    if (!card) return;
+    card.dataset.open = String(open);
+    card.inert = !open;
+    document.documentElement.classList.toggle('cookie-open', open);
+  }
+
+  const current = read();
+  if (current === 'all') loadAnalytics();
+  if (!current) window.setTimeout(() => show(true), 1200);
+
+  card?.querySelectorAll<HTMLButtonElement>('[data-consent]').forEach((btn) =>
+    btn.addEventListener('click', () => {
+      const choice = btn.dataset.consent as Consent;
+      write(choice);
+      if (choice === 'all') loadAnalytics();
+      show(false);
+    }),
+  );
+
+  document.querySelectorAll('[data-cookie-open]').forEach((btn) => btn.addEventListener('click', () => show(true)));
+</script>

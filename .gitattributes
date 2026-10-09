@@ -1,2 +1,9 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Texto sempre com LF no repositório (o build roda em Linux no servidor).
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.avif binary
+*.woff2 binary

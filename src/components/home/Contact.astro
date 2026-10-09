@@ -1,0 +1,313 @@
+---
+/**
+ * Contato + formulário de cotação.
+ * Envio via fetch para `site.quoteEndpoint` (PHP, próxima fase).
+ * Validação no cliente: obrigatórios, e-mail corporativo (mesma lista do site
+ * de referência), consentimento LGPD e honeypot anti-spam.
+ */
+import { Image } from 'astro:assets';
+import Icon from '../Icon.astro';
+import texture from '../../assets/images/tex-containers.jpg';
+import { getLocale } from '../../i18n/utils';
+import { homeCopy } from '../../i18n/home';
+import { ui } from '../../i18n/ui';
+import { serviceSlugs } from '../../data/services';
+import { site } from '../../data/site';
+
+const locale = getLocale(Astro.url);
+const t = homeCopy[locale].contact;
+const f = t.form;
+const services = ui[locale].services;
+
+const inputClass =
+  'peer w-full border-0 border-b border-white/20 bg-transparent px-0 py-3 text-[15px] text-white placeholder:text-steel-500 transition-colors focus:border-ice-400 focus:outline-none aria-[invalid=true]:border-rose-400';
+const labelClass = 'eyebrow block !text-[10px] text-steel-300';
+const errorClass = 'field-error mt-2 hidden text-xs text-rose-300';
+---
+
+<section id="contact" class="relative isolate overflow-hidden bg-navy-950 py-24 text-white md:py-32">
+  <Image src={texture} alt="" widths={[800, 1400, 2000]} sizes="100vw" class="absolute inset-0 -z-20 h-full w-full object-cover opacity-35" />
+  <div class="absolute inset-0 -z-10 bg-[linear-gradient(100deg,var(--color-navy-950)_25%,rgb(5_11_22/0.88)_55%,rgb(5_11_22/0.7))]" aria-hidden="true"></div>
+
+  <div class="container-x grid gap-14 lg:grid-cols-12 lg:gap-10">
+    <div class="lg:col-span-5">
+      <p class="eyebrow flex items-center gap-3 text-ice-300" data-reveal="left">
+        {t.eyebrow}
+      </p>
+      <h2 class="heading-brand mt-6 text-[clamp(1.85rem,3.8vw,3.35rem)] text-white" data-reveal>
+        {t.title[0]}<br /><span class="text-metal">{t.title[1]}</span>
+      </h2>
+      <p class="mt-6 max-w-md text-lg leading-relaxed text-steel-300" data-reveal data-reveal-delay="100">{t.text}</p>
+
+      <p class="mt-8 inline-flex items-center gap-3 border border-ice-400/30 bg-ice-400/10 px-4 py-2.5 text-xs font-medium text-ice-200" data-reveal data-reveal-delay="150">
+        <Icon name="clock" size={15} />
+        {t.response}
+      </p>
+
+      <ul class="mt-12 space-y-5 border-t border-white/10 pt-10" data-reveal data-reveal-delay="200">
+        <li>
+          <a href={`mailto:${site.email}`} class="group flex items-center gap-4">
+            <span class="grid size-11 place-items-center rounded-full border border-white/15 text-ice-300 transition-colors group-hover:border-white group-hover:bg-white group-hover:text-navy-950">
+              <Icon name="mail" size={17} />
+            </span>
+            <span class="text-white/90 group-hover:text-white">{site.email}</span>
+          </a>
+        </li>
+        <li>
+          <a href={`tel:${site.phoneHref}`} class="group flex items-center gap-4">
+            <span class="grid size-11 place-items-center rounded-full border border-white/15 text-ice-300 transition-colors group-hover:border-white group-hover:bg-white group-hover:text-navy-950">
+              <Icon name="phone" size={17} />
+            </span>
+            <span class="text-white/90 group-hover:text-white">{site.phone}</span>
+          </a>
+        </li>
+        <li>
+          <a href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener" class="group flex items-center gap-4">
+            <span class="grid size-11 place-items-center rounded-full border border-white/15 text-ice-300 transition-colors group-hover:border-[#25d366] group-hover:bg-[#25d366] group-hover:text-white">
+              <Icon name="whatsapp" size={17} />
+            </span>
+            <span class="text-white/90 group-hover:text-white">{t.whatsapp}</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="lg:col-span-7" data-reveal data-reveal-delay="120">
+      <div class="relative border border-white/10 bg-navy-900/70 p-6 shadow-[0_40px_100px_-40px_rgb(0_0_0/0.8)] backdrop-blur-xl sm:p-8 md:p-10">
+        <form
+          action={site.quoteEndpoint}
+          method="post"
+          novalidate
+          class="grid gap-x-8 gap-y-8 md:grid-cols-2"
+          data-quote-form
+          data-msg-required={f.required}
+          data-msg-email={f.invalidEmail}
+          data-msg-business={f.businessEmail}
+          data-msg-consent={f.consentRequired}
+        >
+          <input type="hidden" name="lang" value={locale} />
+          <!-- Honeypot: humanos não veem este campo. -->
+          <div class="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
+            <label>Website <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+          </div>
+
+          <div>
+            <label for="q-name" class={labelClass}>{f.name} *</label>
+            <input id="q-name" name="name" type="text" autocomplete="name" required class={inputClass} aria-describedby="q-name-err" />
+            <p id="q-name-err" class={errorClass}></p>
+          </div>
+
+          <div>
+            <label for="q-company" class={labelClass}>{f.company} *</label>
+            <input id="q-company" name="company" type="text" autocomplete="organization" required class={inputClass} aria-describedby="q-company-err" />
+            <p id="q-company-err" class={errorClass}></p>
+          </div>
+
+          <div>
+            <label for="q-email" class={labelClass}>{f.email} *</label>
+            <input id="q-email" name="email" type="email" autocomplete="email" required class={inputClass} aria-describedby="q-email-err" data-business />
+            <p id="q-email-err" class={errorClass}></p>
+          </div>
+
+          <div>
+            <label for="q-phone" class={labelClass}>{f.phone}</label>
+            <input id="q-phone" name="phone" type="tel" autocomplete="tel" class={inputClass} />
+          </div>
+
+          <div>
+            <label for="q-service" class={labelClass}>{f.service}</label>
+            <div class="relative">
+              <select id="q-service" name="service" class={`${inputClass} cursor-pointer appearance-none pr-8 [&>option]:bg-navy-900`} data-service-select>
+                <option value="">{f.servicePlaceholder}</option>
+                {serviceSlugs.map((slug) => <option value={slug}>{services[slug].title}</option>)}
+                <option value="other">{f.serviceOther}</option>
+              </select>
+              <Icon name="chevron-down" size={16} class="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 text-steel-400" />
+            </div>
+          </div>
+
+          <fieldset>
+            <legend class={labelClass}>{f.operation}</legend>
+            <div class="mt-3 flex flex-wrap gap-2">
+              {
+                f.operations.map((op, i) => (
+                  <label class="cursor-pointer">
+                    <input type="radio" name="operation" value={op} class="peer sr-only" checked={i === 0} />
+                    <span class="inline-block border border-white/20 px-4 py-2 font-display text-[10px] uppercase tracking-[0.18em] text-white/75 transition-colors hover:border-white/50 peer-checked:border-white peer-checked:bg-white peer-checked:text-navy-950 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ice-400">
+                      {op}
+                    </span>
+                  </label>
+                ))
+              }
+            </div>
+          </fieldset>
+
+          <div class="md:col-span-2">
+            <label for="q-message" class={labelClass}>{f.message}</label>
+            <textarea id="q-message" name="message" rows="3" placeholder={f.messagePlaceholder} class={`${inputClass} resize-y`}></textarea>
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="flex cursor-pointer items-start gap-3 text-sm leading-relaxed text-steel-300">
+              <input
+                id="q-consent"
+                type="checkbox"
+                name="consent"
+                value="yes"
+                required
+                class="mt-1 size-4 shrink-0 cursor-pointer accent-ice-500"
+                aria-describedby="q-consent-err"
+                data-consent
+              />
+              <span>
+                {f.consent}{' '}
+                <a href={site.privacyPath[locale]} class="text-white underline decoration-white/30 underline-offset-4 hover:decoration-white">{f.consentLink}</a>.
+              </span>
+            </label>
+            <p id="q-consent-err" class={errorClass}></p>
+          </div>
+
+          <div class="flex flex-col gap-4 md:col-span-2 md:flex-row md:items-center md:justify-between">
+            <button type="submit" class="btn btn-metal w-full md:w-auto" data-submit data-label={f.submit} data-sending={f.sending}>
+              <span data-submit-label>{f.submit}</span>
+              <Icon name="arrow-right" size={15} />
+            </button>
+            <p class="hidden text-sm text-rose-300" role="alert" data-form-error>
+              {f.error} <a href={`mailto:${site.email}`} class="text-white underline underline-offset-4">{site.email}</a>.
+            </p>
+          </div>
+        </form>
+
+        <div class="hidden flex-col items-start py-10 text-left" data-form-success tabindex="-1">
+          <span class="grid size-14 place-items-center rounded-full border border-ice-400/40 bg-ice-400/10 text-ice-300">
+            <Icon name="check" size={24} />
+          </span>
+          <h3 class="heading-brand mt-8 text-3xl text-white">{f.successTitle}</h3>
+          <p class="mt-4 max-w-md text-steel-300">{f.successText}</p>
+          <button type="button" class="btn btn-outline mt-10" data-form-again>{f.again}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Mesma lista do site de referência: prioriza e-mails corporativos.
+  const BLOCKED_DOMAINS = new Set([
+    'gmail.com', 'outlook.com', 'hotmail.com', 'yahoo.com', 'yahoo.com.br', 'live.com', 'msn.com', 'icloud.com',
+    'aol.com', 'protonmail.com', 'uol.com.br', 'bol.com.br', 'terra.com.br', 'ig.com.br', 'r7.com',
+    'zipmail.com.br', 'globo.com', 'me.com', 'mac.com', 'yandex.com', 'mail.com', 'googlemail.com',
+    'rocketmail.com', 'inbox.com', 'tempmail.com', '10minutemail.com', 'mailinator.com', 'guerrillamail.com',
+    'sharklasers.com', 'yopmail.com', 'getairmail.com', 'throwawaymail.com', 'temp-mail.org', 'fake-email.com',
+    'dispostable.com', 'maildrop.cc', 'getnada.com', 'trashemail.com',
+  ]);
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  const form = document.querySelector<HTMLFormElement>('[data-quote-form]');
+  const success = document.querySelector<HTMLElement>('[data-form-success]');
+
+  if (form && success) {
+    const msgs = form.dataset;
+    const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    const submitLabel = form.querySelector<HTMLElement>('[data-submit-label]')!;
+    const errorBox = form.querySelector<HTMLElement>('[data-form-error]')!;
+    const select = form.querySelector<HTMLSelectElement>('[data-service-select]');
+
+    // "Cotar este serviço" nos painéis pré-seleciona o serviço.
+    document.querySelectorAll<HTMLElement>('[data-quote-service]').forEach((link) =>
+      link.addEventListener('click', () => {
+        if (select && link.dataset.quoteService) select.value = link.dataset.quoteService;
+      }),
+    );
+
+    const setError = (field: HTMLInputElement, message: string) => {
+      const box = document.getElementById(`${field.id}-err`);
+      field.setAttribute('aria-invalid', message ? 'true' : 'false');
+      if (box) {
+        box.textContent = message;
+        box.classList.toggle('hidden', !message);
+      }
+    };
+
+    const validate = (field: HTMLInputElement): string => {
+      if (field.type === 'checkbox') return field.checked ? '' : (msgs.msgConsent ?? '');
+      const value = field.value.trim();
+      if (field.required && !value) return msgs.msgRequired ?? '';
+      if (field.type === 'email' && value) {
+        if (!EMAIL_RE.test(value)) return msgs.msgEmail ?? '';
+        const domain = value.split('@').pop()?.toLowerCase() ?? '';
+        if (field.hasAttribute('data-business') && BLOCKED_DOMAINS.has(domain)) return msgs.msgBusiness ?? '';
+      }
+      return '';
+    };
+
+    const fields = [...form.querySelectorAll<HTMLInputElement>('input[required]')];
+
+    fields.forEach((field) => {
+      const evt = field.type === 'checkbox' ? 'change' : 'blur';
+      field.addEventListener(evt, () => setError(field, validate(field)));
+      field.addEventListener('input', () => {
+        if (field.getAttribute('aria-invalid') === 'true') setError(field, validate(field));
+      });
+    });
+
+    const setSending = (sending: boolean) => {
+      submit.disabled = sending;
+      submit.classList.toggle('opacity-70', sending);
+      submitLabel.textContent = (sending ? submit.dataset.sending : submit.dataset.label) ?? '';
+    };
+
+    const showSuccess = () => {
+      form.classList.add('hidden');
+      success.classList.remove('hidden');
+      success.classList.add('flex');
+      success.focus();
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorBox.classList.add('hidden');
+
+      let firstInvalid: HTMLInputElement | null = null;
+      fields.forEach((field) => {
+        const message = validate(field);
+        setError(field, message);
+        if (message && !firstInvalid) firstInvalid = field;
+      });
+      if (firstInvalid) {
+        (firstInvalid as HTMLInputElement).focus();
+        return;
+      }
+
+      const data = new FormData(form);
+      // Honeypot preenchido = bot: finge sucesso e não envia.
+      if (String(data.get('website') ?? '').trim()) {
+        showSuccess();
+        return;
+      }
+
+      setSending(true);
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: data,
+          headers: { Accept: 'application/json' },
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        showSuccess();
+        form.reset();
+      } catch {
+        errorBox.classList.remove('hidden');
+      } finally {
+        setSending(false);
+      }
+    });
+
+    success.querySelector('[data-form-again]')?.addEventListener('click', () => {
+      success.classList.add('hidden');
+      success.classList.remove('flex');
+      form.classList.remove('hidden');
+      form.querySelector<HTMLInputElement>('input:not([type=hidden])')?.focus();
+    });
+  }
+</script>

@@ -1,0 +1,323 @@
+---
+/**
+ * "The way forward." — seção com a página "travada" (sticky): o scroll dentro
+ * dela preenche a rota e acende as etapas 01 → 04; ao completar, a página
+ * volta a rolar normalmente.
+ * Desktop: 4 colunas acendendo em sequência. Mobile: a etapa atual troca no lugar.
+ * Sem JS, com movimento reduzido ou em telas muito baixas: layout estático.
+ */
+import { getLocale } from '../../i18n/utils';
+import { homeCopy } from '../../i18n/home';
+
+const t = homeCopy[getLocale(Astro.url)].process;
+const num = (i: number) => String(i + 1).padStart(2, '0');
+---
+
+<section id="process" class="process relative bg-mist-50 text-navy-900" data-process data-pin="false" style="--p:0">
+  <div class="process-stage">
+    <div class="container-x w-full">
+      <div class="mx-auto max-w-3xl text-center">
+        <p class="eyebrow inline-flex items-center gap-3 text-navy-600" data-reveal>
+          {t.eyebrow}
+        </p>
+        <h2
+          class="mt-6 font-display text-[clamp(2.2rem,5.6vw,4.75rem)] font-light uppercase leading-none tracking-[0.18em] text-navy-950"
+          lang="en"
+          data-reveal
+        >
+          {t.title}
+        </h2>
+        <p class="mt-6 text-lg text-steel-600" data-reveal data-reveal-delay="100">{t.text}</p>
+      </div>
+
+      <div class="process-route mt-14 lg:mt-20">
+        <div class="process-track" aria-hidden="true" data-track>
+          <span class="process-fill"></span>
+          {
+            t.steps.map((_, i) => (
+              <span class="process-node" style={`--i:${i}`} data-node>
+                <span class="process-node-label">{num(i)}</span>
+              </span>
+            ))
+          }
+          <span class="process-head"></span>
+        </div>
+
+        <ol class="process-steps">
+          {
+            t.steps.map((step, i) => (
+              <li class="process-step" data-step>
+                <span class="process-num block font-display text-6xl font-extralight leading-none tracking-tight">{num(i)}</span>
+                <h3 class="eyebrow mt-6 !text-[13px] text-navy-950">{step.title}</h3>
+                <p class="mt-3 max-w-xs leading-relaxed text-steel-600">{step.text}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .process {
+    --gap: 2.5rem;
+    /* Distância de scroll em que a página fica "travada". */
+    --pin-length: 230vh;
+    scroll-margin-top: -5rem;
+  }
+
+  .process-stage {
+    padding-block: 6rem;
+  }
+
+  /* ---------- Modo travado ---------- */
+  .process[data-pin='true'] {
+    height: calc(100svh + var(--pin-length));
+  }
+
+  .process[data-pin='true'] .process-stage {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    height: 100svh;
+    padding-block: 4.5rem 2rem;
+    overflow: hidden;
+  }
+
+  /* ---------- Rota ---------- */
+  .process-track {
+    position: relative;
+    height: 1px;
+    background: rgb(10 20 36 / 0.12);
+  }
+
+  .process-fill {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--color-ice-500), var(--color-navy-700));
+    transform-origin: left;
+    scale: var(--p) 1;
+  }
+
+  .process-head {
+    position: absolute;
+    top: 50%;
+    left: calc(var(--p) * 100%);
+    width: 9px;
+    height: 9px;
+    border-radius: 9999px;
+    background: var(--color-ice-500);
+    box-shadow:
+      0 0 0 6px rgb(47 166 240 / 0.15),
+      0 0 24px 4px rgb(47 166 240 / 0.45);
+    translate: -50% -50%;
+  }
+
+  /* Mobile: marcos distribuídos de ponta a ponta. */
+  .process-node {
+    position: absolute;
+    top: 50%;
+    left: calc(var(--i) * 100% / 3);
+    translate: calc(var(--i) * -100% / 3) -50%;
+    width: 15px;
+    height: 15px;
+    border-radius: 9999px;
+    border: 1px solid rgb(10 20 36 / 0.25);
+    background: var(--color-mist-50);
+    transition:
+      border-color 0.5s ease,
+      background-color 0.5s ease,
+      box-shadow 0.5s ease;
+  }
+
+  .process-node-label {
+    position: absolute;
+    top: calc(100% + 0.75rem);
+    left: 50%;
+    translate: -50% 0;
+    font-family: var(--font-display);
+    font-size: 0.6875rem;
+    letter-spacing: 0.2em;
+    color: rgb(10 20 36 / 0.35);
+    transition: color 0.5s ease;
+  }
+
+  .process-node.is-reached {
+    border-color: var(--color-ice-500);
+    background: var(--color-navy-900);
+    box-shadow: 0 0 0 5px rgb(47 166 240 / 0.12);
+  }
+
+  .process-node.is-reached .process-node-label {
+    color: var(--color-navy-900);
+  }
+
+  /* ---------- Etapas ---------- */
+  .process-steps {
+    display: grid;
+    gap: 3rem;
+    margin-top: 4rem;
+  }
+
+  .process-num {
+    color: rgb(10 20 36 / 0.14);
+    transition: color 0.6s ease;
+  }
+
+  .process-step h3,
+  .process-step p {
+    transition: opacity 0.6s ease;
+  }
+
+  .process-step.is-reached .process-num {
+    color: var(--color-navy-900);
+  }
+
+  /* Mobile travado: só a etapa atual, trocando no mesmo lugar. */
+  .process[data-pin='true'] .process-steps {
+    gap: 0;
+  }
+
+  .process[data-pin='true'] .process-step {
+    grid-area: 1 / 1;
+    opacity: 0;
+    translate: 0 1.25rem;
+    visibility: hidden;
+    transition:
+      opacity 0.5s ease,
+      translate 0.7s var(--ease-out-expo),
+      visibility 0s linear 0.5s;
+  }
+
+  .process[data-pin='true'] .process-step.is-current {
+    opacity: 1;
+    translate: 0 0;
+    visibility: visible;
+    transition:
+      opacity 0.6s ease 0.1s,
+      translate 0.8s var(--ease-out-expo) 0.1s;
+  }
+
+  /* Desktop: 4 colunas alinhadas aos marcos da rota. */
+  @media (width >= 64rem) {
+    .process-node {
+      left: calc(var(--i) * (100% + var(--gap)) / 4);
+      translate: 0 -50%;
+    }
+
+    .process-node-label {
+      display: none;
+    }
+
+    .process-steps,
+    .process[data-pin='true'] .process-steps {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--gap);
+      margin-top: 2.5rem;
+    }
+
+    .process[data-pin='true'] .process-step {
+      grid-area: auto;
+      opacity: 1;
+      translate: none;
+      visibility: visible;
+    }
+
+    .process[data-pin='true'] .process-step:not(.is-reached) h3,
+    .process[data-pin='true'] .process-step:not(.is-reached) p {
+      opacity: 0.35;
+    }
+  }
+
+  /* Estático (sem JS / movimento reduzido / tela baixa): rota completa. */
+  .process[data-pin='false'] {
+    --p: 1 !important;
+  }
+
+  .process[data-pin='false'] .process-node {
+    border-color: var(--color-ice-500);
+    background: var(--color-navy-900);
+  }
+
+  .process[data-pin='false'] .process-node-label,
+  .process[data-pin='false'] .process-num {
+    color: var(--color-navy-900);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .process-step,
+    .process-node,
+    .process-num {
+      transition: none !important;
+    }
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-process]');
+
+  if (root) {
+    const track = root.querySelector<HTMLElement>('[data-track]')!;
+    const nodes = [...root.querySelectorAll<HTMLElement>('[data-node]')];
+    const steps = [...root.querySelectorAll<HTMLElement>('[data-step]')];
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const tallEnough = window.matchMedia('(min-height: 560px)');
+
+    // Posição (0–1) de cada marco ao longo da rota; recalculada no resize.
+    let stops: number[] = [];
+    const measure = () => {
+      const tr = track.getBoundingClientRect();
+      stops = nodes.map((n) => {
+        const r = n.getBoundingClientRect();
+        return tr.width ? (r.left + r.width / 2 - tr.left) / tr.width : 0;
+      });
+    };
+
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      if (root.dataset.pin !== 'true') return;
+      const rect = root.getBoundingClientRect();
+      const distance = rect.height - window.innerHeight;
+      const scrolled = distance > 0 ? Math.min(1, Math.max(0, -rect.top / distance)) : 1;
+      // Cada etapa recebe a mesma fatia do scroll; a linha vai de um marco ao próximo
+      // (na última fatia, do último marco até o fim da rota).
+      const n = stops.length;
+      const seg = scrolled * n;
+      const current = Math.min(n - 1, Math.floor(seg));
+      const from = stops[current] ?? 0;
+      const to = stops[current + 1] ?? 1;
+      const p = from + (to - from) * (seg - current);
+      root.style.setProperty('--p', p.toFixed(4));
+
+      nodes.forEach((node, i) => node.classList.toggle('is-reached', i <= current));
+      steps.forEach((step, i) => {
+        step.classList.toggle('is-reached', i <= current);
+        step.classList.toggle('is-current', i === current);
+      });
+    };
+
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+
+    const setMode = () => {
+      const pin = !reduceMotion.matches && tallEnough.matches;
+      root.dataset.pin = String(pin);
+      if (!pin) root.style.removeProperty('--p');
+      measure();
+      update();
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', () => {
+      measure();
+      onScroll();
+    });
+    reduceMotion.addEventListener('change', setMode);
+    tallEnough.addEventListener('change', setMode);
+    setMode();
+  }
+</script>

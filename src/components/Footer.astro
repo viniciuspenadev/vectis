@@ -1,0 +1,158 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/brand/vectis-logo.png';
+import Icon from './Icon.astro';
+import { getLocale, localizePath } from '../i18n/utils';
+import { ui } from '../i18n/ui';
+import { serviceSlugs } from '../data/services';
+import { site } from '../data/site';
+
+const locale = getLocale(Astro.url);
+const t = ui[locale];
+const home = localizePath('/', locale);
+const anchor = (id: string) => `${home}#${id}`;
+const year = new Date().getFullYear();
+
+const companyLinks = [
+  { id: 'about', label: t.nav.about },
+  { id: 'process', label: t.nav.process },
+  { id: 'industries', label: t.nav.industries },
+  { id: 'network', label: t.nav.network },
+  { id: 'faq', label: t.nav.faq },
+];
+---
+
+<footer class="relative border-t border-white/[0.08] bg-navy-950 text-sm text-steel-400">
+  <div class="container-x">
+    <div class="flex flex-col gap-8 border-b border-white/[0.08] py-14 lg:flex-row lg:items-center lg:justify-between">
+      <div class="flex items-center gap-8">
+        <a href={home} aria-label={t.nav.home}>
+          <Image src={logo} alt={site.name} width={170} densities={[1.5, 2]} class="h-auto w-[150px] lg:w-[170px]" />
+        </a>
+        <span class="hidden h-12 w-px bg-white/15 sm:block" aria-hidden="true"></span>
+        <p class="eyebrow hidden tracking-[0.42em] text-white/80 sm:block">The way forward.</p>
+      </div>
+      <p class="eyebrow leading-loose tracking-[0.24em] text-steel-400 lg:text-right">
+        {t.footer.statement[0]}<br />{t.footer.statement[1]}
+      </p>
+    </div>
+
+    <div class="grid gap-12 py-14 sm:grid-cols-2 lg:grid-cols-12">
+      <div class="lg:col-span-4">
+        <h2 class="eyebrow text-white">{t.footer.contact}</h2>
+        <ul class="mt-6 space-y-3.5">
+          <li>
+            <a href={`mailto:${site.email}`} class="inline-flex items-center gap-3 transition-colors hover:text-white">
+              <Icon name="mail" size={16} class="text-ice-400" />
+              {site.email}
+            </a>
+          </li>
+          <li>
+            <a href={`tel:${site.phoneHref}`} class="inline-flex items-center gap-3 transition-colors hover:text-white">
+              <Icon name="phone" size={16} class="text-ice-400" />
+              {site.phone}
+            </a>
+          </li>
+          <li class="inline-flex items-center gap-3">
+            <Icon name="map-pin" size={16} class="text-ice-400" />
+            {site.address.city}, {site.address.region}, Brasil
+          </li>
+          <li class="flex items-center gap-3">
+            <Icon name="clock" size={16} class="text-ice-400" />
+            {t.footer.hours}
+          </li>
+        </ul>
+
+        <div class="mt-8 flex items-center gap-3">
+          <a
+            href={site.social.linkedin}
+            target="_blank"
+            rel="noopener"
+            aria-label="LinkedIn"
+            class="grid size-10 place-items-center rounded-full border border-white/15 text-white/80 transition-colors hover:border-white hover:bg-white hover:text-navy-950"
+          >
+            <Icon name="linkedin" size={15} />
+          </a>
+          <a
+            href={site.social.instagram}
+            target="_blank"
+            rel="noopener"
+            aria-label="Instagram"
+            class="grid size-10 place-items-center rounded-full border border-white/15 text-white/80 transition-colors hover:border-white hover:bg-white hover:text-navy-950"
+          >
+            <Icon name="instagram" size={15} />
+          </a>
+          <a
+            href={`https://wa.me/${site.whatsapp}`}
+            target="_blank"
+            rel="noopener"
+            aria-label="WhatsApp"
+            class="grid size-10 place-items-center rounded-full border border-white/15 text-white/80 transition-colors hover:border-white hover:bg-white hover:text-navy-950"
+          >
+            <Icon name="whatsapp" size={15} />
+          </a>
+        </div>
+      </div>
+
+      <nav class="lg:col-span-3 lg:col-start-6" aria-label={t.footer.services}>
+        <h2 class="eyebrow text-white">{t.footer.services}</h2>
+        <ul class="mt-6 space-y-3">
+          {
+            serviceSlugs.map((slug) => (
+              <li>
+                <a href={anchor(`service-${slug}`)} class="link-line transition-colors hover:text-white">
+                  {t.services[slug].title}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <nav class="lg:col-span-2" aria-label={t.footer.company}>
+        <h2 class="eyebrow text-white">{t.footer.company}</h2>
+        <ul class="mt-6 space-y-3">
+          {
+            companyLinks.map((link) => (
+              <li>
+                <a href={anchor(link.id)} class="link-line transition-colors hover:text-white">
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div class="flex items-start lg:col-span-2 lg:justify-end">
+        <a
+          href="#top"
+          class="group inline-flex items-center gap-3 text-white/80 transition-colors hover:text-white"
+          data-back-to-top
+        >
+          <span class="eyebrow whitespace-nowrap">{t.footer.backToTop}</span>
+          <span class="grid size-10 place-items-center rounded-full border border-white/20 transition-colors group-hover:border-white">
+            <Icon name="arrow-up-right" size={15} class="-rotate-45" />
+          </span>
+        </a>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-4 border-t border-white/[0.08] pb-24 pt-8 text-xs text-steel-400 sm:flex-row sm:items-center sm:justify-between sm:pb-8 sm:pr-24">
+      <p>© {year} {site.name}. {t.footer.rights}</p>
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
+        <a href={site.privacyPath[locale]} class="link-line transition-colors hover:text-white">{t.footer.privacy}</a>
+        <button type="button" class="link-line transition-colors hover:text-white" data-cookie-open>
+          {t.footer.cookies}
+        </button>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.querySelector('[data-back-to-top]')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>

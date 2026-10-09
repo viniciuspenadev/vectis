@@ -1,0 +1,520 @@
+---
+/**
+ * Navbar fixa: transparente sobre o hero, vira barra "vidro navy" no scroll,
+ * se esconde ao rolar para baixo e reaparece ao rolar para cima.
+ * Desktop: mega menu de serviços. Mobile: menu em tela cheia.
+ */
+import { Image } from 'astro:assets';
+import logo from '../assets/brand/vectis-logo.png';
+import Icon, { type IconName } from './Icon.astro';
+import { getLocale, localizePath, switchLocalePath } from '../i18n/utils';
+import { locales, localeMeta } from '../i18n/config';
+import { ui } from '../i18n/ui';
+import { serviceSlugs, serviceVisuals } from '../data/services';
+import { site } from '../data/site';
+
+const locale = getLocale(Astro.url);
+const t = ui[locale];
+const home = localizePath('/', locale);
+const anchor = (id: string) => `${home}#${id}`;
+
+const desktopLinks = [
+  { id: 'about', label: t.nav.about },
+  { id: 'industries', label: t.nav.industries },
+  { id: 'network', label: t.nav.network },
+  { id: 'contact', label: t.nav.contact },
+];
+
+const mobileLinks = [
+  { id: 'about', label: t.nav.about },
+  { id: 'services', label: t.nav.services },
+  { id: 'process', label: t.nav.process },
+  { id: 'industries', label: t.nav.industries },
+  { id: 'network', label: t.nav.network },
+  { id: 'faq', label: t.nav.faq },
+  { id: 'contact', label: t.nav.contact },
+];
+---
+
+<header id="site-header" class="site-header fixed inset-x-0 top-0 z-[70]" data-scrolled="false" data-hidden="false">
+  <div class="header-bg absolute inset-0 -z-10" aria-hidden="true"></div>
+
+  <div class="container-x header-row flex items-center justify-between gap-8">
+    <a href={home} class="relative z-10 shrink-0" aria-label={t.nav.home}>
+      <Image
+        src={logo}
+        alt={site.name}
+        width={156}
+        densities={[1.5, 2]}
+        loading="eager"
+        class="h-auto w-[128px] lg:w-[156px]"
+      />
+    </a>
+
+    <nav aria-label={t.nav.main} class="hidden lg:block">
+      <ul class="flex items-center gap-1">
+        <li>
+          <a href={anchor('about')} class="nav-link">{desktopLinks[0].label}</a>
+        </li>
+
+        <li class="mega-wrap relative" data-mega>
+          <button
+            type="button"
+            class="nav-link inline-flex items-center gap-1.5"
+            aria-expanded="false"
+            aria-controls="mega-services"
+            data-mega-toggle
+          >
+            {t.nav.services}
+            <Icon name="chevron-down" size={14} class="mega-chevron transition-transform duration-300" />
+          </button>
+
+          <div id="mega-services" class="mega-panel" data-mega-panel>
+            <div class="grid grid-cols-[minmax(0,15rem)_minmax(0,1fr)] gap-8 p-8">
+              <div class="flex flex-col justify-between border-r border-white/10 pr-8">
+                <div>
+                  <p class="eyebrow text-ice-400">{t.nav.services}</p>
+                  <p class="mt-4 text-sm leading-relaxed text-steel-300">{t.nav.servicesIntro}</p>
+                </div>
+                <a href={anchor('services')} class="eyebrow mt-8 inline-flex items-center gap-2 text-white hover:text-ice-300">
+                  {t.nav.allServices}
+                  <Icon name="arrow-right" size={14} />
+                </a>
+              </div>
+              <ul class="grid grid-cols-2 gap-1">
+                {
+                  serviceSlugs.map((slug) => (
+                    <li>
+                      <a
+                        href={anchor(`service-${slug}`)}
+                        class="group flex items-start gap-4 rounded-sm p-3.5 transition-colors hover:bg-white/[0.05]"
+                      >
+                        <span class="grid size-10 shrink-0 place-items-center rounded-full border border-white/12 text-ice-300 transition-colors group-hover:border-ice-400/60 group-hover:bg-ice-400/10">
+                          <Icon name={serviceVisuals[slug].icon as IconName} size={18} />
+                        </span>
+                        <span>
+                          <span class="block text-sm font-medium text-white">{t.services[slug].title}</span>
+                          <span class="mt-0.5 block text-xs text-steel-400">{t.services[slug].short}</span>
+                        </span>
+                      </a>
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+          </div>
+        </li>
+
+        {
+          desktopLinks.slice(1).map((link) => (
+            <li>
+              <a href={anchor(link.id)} class="nav-link">
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="relative z-10 flex items-center gap-5">
+      <ul class="hidden items-center gap-3 font-display text-[11px] font-medium tracking-[0.2em] sm:flex" aria-label={t.nav.language}>
+        {
+          locales.map((l, i) => (
+            <li class="flex items-center gap-3">
+              {i > 0 && <span class="h-3 w-px bg-white/20" aria-hidden="true" />}
+              <a
+                href={switchLocalePath(Astro.url, l)}
+                hreflang={localeMeta[l].htmlLang}
+                lang={localeMeta[l].htmlLang}
+                aria-current={l === locale ? 'true' : undefined}
+                aria-label={localeMeta[l].label}
+                class:list={[
+                  'transition-colors',
+                  l === locale ? 'text-white' : 'text-white/45 hover:text-white',
+                ]}
+              >
+                {localeMeta[l].short}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <a href={anchor('contact')} class="btn btn-outline hidden !px-5 !py-3 md:inline-flex">
+        {t.nav.quote}
+        <Icon name="arrow-right" size={14} />
+      </a>
+
+      <button
+        type="button"
+        class="menu-toggle relative grid size-11 place-items-center lg:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label={t.nav.menu}
+        data-label-open={t.nav.menu}
+        data-label-close={t.nav.close}
+        data-menu-toggle
+      >
+        <span class="menu-line" aria-hidden="true"></span>
+        <span class="menu-line" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div id="mobile-menu" class="mobile-menu fixed inset-0 z-[60] lg:hidden" data-open="false" inert>
+  <div class="absolute inset-0 bg-navy-950/97 backdrop-blur-xl" data-menu-close></div>
+  <div class="container-x relative flex h-full flex-col overflow-y-auto pb-10 pt-28">
+    <nav aria-label={t.nav.main}>
+      <ol>
+        {
+          mobileLinks.map((link, i) => (
+            <li class="mobile-item border-b border-white/[0.08]" style={`--i:${i}`}>
+              <a href={anchor(link.id)} class="group flex items-baseline gap-5 py-4" data-menu-link>
+                <span class="eyebrow text-ice-400/80">{String(i + 1).padStart(2, '0')}</span>
+                <span class="font-display text-[1.65rem] font-light uppercase tracking-[0.06em] text-white transition-colors group-hover:text-ice-300 sm:text-4xl">
+                  {link.label}
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+
+    <div class="mobile-item mt-10 flex flex-col gap-8" style="--i:8">
+      <ul class="flex items-center gap-2 font-display text-xs font-medium tracking-[0.2em]" aria-label={t.nav.language}>
+        {
+          locales.map((l) => (
+            <li>
+              <a
+                href={switchLocalePath(Astro.url, l)}
+                hreflang={localeMeta[l].htmlLang}
+                lang={localeMeta[l].htmlLang}
+                aria-current={l === locale ? 'true' : undefined}
+                class:list={[
+                  'grid h-10 w-14 place-items-center border transition-colors',
+                  l === locale ? 'border-white bg-white text-navy-950' : 'border-white/20 text-white/70 hover:border-white/60',
+                ]}
+              >
+                {localeMeta[l].short}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="space-y-2 text-sm text-steel-300">
+        <a href={`mailto:${site.email}`} class="flex items-center gap-3 hover:text-white">
+          <Icon name="mail" size={16} class="text-ice-400" />
+          {site.email}
+        </a>
+        <a href={`tel:${site.phoneHref}`} class="flex items-center gap-3 hover:text-white">
+          <Icon name="phone" size={16} class="text-ice-400" />
+          {site.phone}
+        </a>
+      </div>
+
+      <a href={anchor('contact')} class="btn btn-metal w-full" data-menu-link>
+        {t.nav.quote}
+        <Icon name="arrow-right" size={14} />
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .site-header {
+    transition: translate 0.5s var(--ease-out-expo);
+  }
+
+  .site-header[data-hidden='true'] {
+    translate: 0 -100%;
+  }
+
+  .header-row {
+    height: 4.75rem;
+    transition: height 0.5s var(--ease-out-expo);
+  }
+
+  @media (width >= 64rem) {
+    .header-row {
+      height: 6rem;
+    }
+  }
+
+  .header-bg {
+    opacity: 0;
+    background: rgb(5 11 22 / 0.92);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    border-bottom: 1px solid rgb(255 255 255 / 0.08);
+    transition: opacity 0.5s var(--ease-out-expo);
+  }
+
+  /* Gradiente de topo para legibilidade sobre fotos claras. */
+  .site-header::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 -3rem;
+    z-index: -20;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgb(5 11 22 / 0.55), transparent);
+    transition: opacity 0.5s ease;
+  }
+
+  .site-header[data-scrolled='true'] .header-row {
+    height: 4.5rem;
+  }
+
+  .site-header[data-scrolled='true'] .header-bg {
+    opacity: 1;
+  }
+
+  .site-header[data-scrolled='true']::before {
+    opacity: 0;
+  }
+
+  .nav-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    white-space: nowrap;
+    padding: 0.75rem 1rem;
+    font-family: var(--font-display);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgb(255 255 255 / 0.78);
+    transition: color 0.3s ease;
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 1rem;
+    right: 1rem;
+    bottom: 0.45rem;
+    height: 1px;
+    background: currentColor;
+    scale: 0 1;
+    transition: scale 0.45s var(--ease-out-expo);
+  }
+
+  .nav-link:hover,
+  .nav-link:focus-visible,
+  .nav-link[aria-expanded='true'] {
+    color: #fff;
+  }
+
+  .nav-link:hover::after,
+  .nav-link:focus-visible::after,
+  .nav-link[aria-expanded='true']::after {
+    scale: 1 1;
+  }
+
+  .mega-panel {
+    position: absolute;
+    top: calc(100% + 0.75rem);
+    left: 50%;
+    width: min(52rem, 84vw);
+    translate: -50% 0.75rem;
+    opacity: 0;
+    visibility: hidden;
+    background: rgb(10 20 36 / 0.96);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgb(255 255 255 / 0.1);
+    box-shadow: 0 40px 80px -30px rgb(0 0 0 / 0.7);
+    transition:
+      opacity 0.35s var(--ease-out-expo),
+      translate 0.45s var(--ease-out-expo),
+      visibility 0.35s;
+  }
+
+  /* Ponte invisível para o mouse não "cair" entre o botão e o painel. */
+  .mega-panel::before {
+    content: '';
+    position: absolute;
+    inset: -1.25rem 0 auto;
+    height: 1.25rem;
+  }
+
+  .mega-wrap[data-open='true'] .mega-panel {
+    opacity: 1;
+    visibility: visible;
+    translate: -50% 0;
+  }
+
+  .mega-wrap[data-open='true'] :global(.mega-chevron) {
+    rotate: 180deg;
+  }
+
+  .menu-line {
+    position: absolute;
+    left: 50%;
+    width: 1.5rem;
+    height: 1.5px;
+    background: #fff;
+    translate: -50% 0;
+    transition:
+      transform 0.45s var(--ease-out-expo),
+      top 0.45s var(--ease-out-expo);
+  }
+
+  .menu-line:first-child {
+    top: 40%;
+  }
+
+  .menu-line:last-child {
+    top: 60%;
+  }
+
+  .menu-toggle[aria-expanded='true'] .menu-line {
+    top: 50%;
+  }
+
+  .menu-toggle[aria-expanded='true'] .menu-line:first-child {
+    transform: rotate(45deg);
+  }
+
+  .menu-toggle[aria-expanded='true'] .menu-line:last-child {
+    transform: rotate(-45deg);
+  }
+
+  .mobile-menu {
+    visibility: hidden;
+    opacity: 0;
+    transition:
+      opacity 0.45s var(--ease-out-expo),
+      visibility 0.45s;
+  }
+
+  .mobile-menu[data-open='true'] {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .mobile-item {
+    opacity: 0;
+    translate: 0 1.25rem;
+    transition:
+      opacity 0.6s var(--ease-out-expo),
+      translate 0.7s var(--ease-out-expo);
+  }
+
+  .mobile-menu[data-open='true'] .mobile-item {
+    opacity: 1;
+    translate: 0 0;
+    transition-delay: calc(var(--i) * 45ms + 120ms);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-header,
+    .mobile-item,
+    .mega-panel {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const header = document.getElementById('site-header');
+  const menu = document.getElementById('mobile-menu');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const mega = document.querySelector<HTMLElement>('[data-mega]');
+  const megaToggle = document.querySelector<HTMLButtonElement>('[data-mega-toggle]');
+
+  /* ---------- Estado no scroll (fundo + esconder/mostrar) ---------- */
+  let lastY = window.scrollY;
+  let ticking = false;
+
+  function onScroll() {
+    if (!header) return;
+    const y = window.scrollY;
+    header.dataset.scrolled = String(y > 24);
+    const goingDown = y > lastY;
+    const menuOpen = menu?.dataset.open === 'true';
+    const megaOpen = mega?.dataset.open === 'true';
+    header.dataset.hidden = String(goingDown && y > 320 && !menuOpen && !megaOpen);
+    lastY = y;
+    ticking = false;
+  }
+
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (!ticking) {
+        requestAnimationFrame(onScroll);
+        ticking = true;
+      }
+    },
+    { passive: true },
+  );
+  onScroll();
+
+  /* ---------- Mega menu de serviços ---------- */
+  function setMega(open: boolean) {
+    if (!mega || !megaToggle) return;
+    mega.dataset.open = String(open);
+    megaToggle.setAttribute('aria-expanded', String(open));
+  }
+
+  if (mega && megaToggle) {
+    let closeTimer: number | undefined;
+    const canHover = window.matchMedia('(hover: hover)').matches;
+
+    megaToggle.addEventListener('click', () => setMega(mega.dataset.open !== 'true'));
+
+    if (canHover) {
+      mega.addEventListener('mouseenter', () => {
+        clearTimeout(closeTimer);
+        setMega(true);
+      });
+      mega.addEventListener('mouseleave', () => {
+        closeTimer = window.setTimeout(() => setMega(false), 180);
+      });
+    }
+
+    mega.addEventListener('focusout', (e) => {
+      if (!mega.contains(e.relatedTarget as Node | null)) setMega(false);
+    });
+
+    mega.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setMega(false)));
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mega.dataset.open === 'true') {
+        setMega(false);
+        megaToggle.focus();
+      }
+    });
+  }
+
+  /* ---------- Menu mobile ---------- */
+  function setMenu(open: boolean) {
+    if (!menu || !toggle) return;
+    menu.dataset.open = String(open);
+    menu.inert = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', (open ? toggle.dataset.labelClose : toggle.dataset.labelOpen) ?? '');
+    document.documentElement.classList.toggle('menu-open', open);
+    if (header) header.dataset.hidden = 'false';
+  }
+
+  toggle?.addEventListener('click', () => setMenu(menu?.dataset.open !== 'true'));
+  menu?.querySelectorAll('[data-menu-link], [data-menu-close]').forEach((el) =>
+    el.addEventListener('click', () => setMenu(false)),
+  );
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menu?.dataset.open === 'true') {
+      setMenu(false);
+      toggle?.focus();
+    }
+  });
+  window.matchMedia('(min-width: 1024px)').addEventListener('change', (e) => {
+    if (e.matches) setMenu(false);
+  });
+</script>
