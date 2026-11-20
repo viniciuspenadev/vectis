@@ -93,9 +93,9 @@ const pct = (v: number, total: number) => `${((v / total) * 100).toFixed(3)}%`;
           {t.title[0]}<br /><span class="text-metal">{t.title[1]}</span>
         </h2>
       </div>
-      <p class="leading-relaxed text-steel-300 lg:col-span-5 lg:col-start-8" data-reveal data-reveal-delay="120">
-        {t.text}
-      </p>
+      <div class="space-y-4 leading-relaxed text-steel-300 lg:col-span-5 lg:col-start-8" data-reveal data-reveal-delay="120">
+        {t.text.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
     </div>
 
     <figure class="net-map relative -mx-[38%] mt-12 md:mx-0 md:mt-20" aria-hidden="true" data-reveal="fade">

@@ -22,10 +22,10 @@ const t = homeCopy[getLocale(Astro.url)].industries;
       </p>
     </div>
 
-    <ul class="mt-14 grid gap-px border border-navy-900/10 bg-navy-900/10 sm:grid-cols-2 md:mt-20 lg:grid-cols-4">
+    <ul class="mt-14 grid gap-px border border-navy-900/10 bg-navy-900/10 sm:grid-cols-2 md:mt-20 lg:grid-cols-5">
       {
         t.items.map((item, i) => (
-          <li class="ind-card group relative isolate flex flex-col overflow-hidden bg-mist-100 p-7 sm:min-h-[15.5rem] lg:p-8" data-reveal data-reveal-delay={(i % 4) * 80}>
+          <li class="ind-card group relative isolate flex flex-col overflow-hidden bg-mist-100 p-7 sm:min-h-[15.5rem] sm:last:odd:col-span-2 lg:p-7 lg:last:odd:col-span-1" data-reveal data-reveal-delay={i * 80}>
             <div class="flex items-start justify-between">
               <span class="grid size-12 place-items-center rounded-full border border-navy-900/15 text-navy-700 transition-colors duration-500 group-hover:border-white/25 group-hover:text-ice-300">
                 <Icon name={item.icon as IconName} size={20} />

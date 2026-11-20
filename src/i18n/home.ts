@@ -1,6 +1,8 @@
 /**
  * Conteúdo da home nos três idiomas.
- * Slogans e frases institucionais vêm do brand board da Vectis.
+ * PT: textos revisados e aprovados pela diretoria (Vectis_Revisao_Textos_Site_para_Marketing_v2).
+ * EN/ES: traduções dos textos aprovados em PT.
+ * Tagline oficial: "Your way forward." · Frase institucional: "We know the way. We keep it moving."
  */
 import type { Locale } from './config';
 import type { ServiceSlug } from '../data/services';
@@ -9,7 +11,7 @@ type ServiceCopy = Record<ServiceSlug, { text: string; tags: string[] }>;
 
 const pt = {
   meta: {
-    title: 'Vectis International Logistics | The Way Forward',
+    title: 'Vectis International Logistics | Your Way Forward',
     description:
       'Logística internacional de ponta a ponta: frete marítimo, aéreo e rodoviário, desembaraço aduaneiro, armazenagem e seguro de carga. Conhecemos o caminho.',
   },
@@ -22,19 +24,19 @@ const pt = {
     goTo: 'Ir para o slide',
     pause: 'Pausar apresentação',
     play: 'Retomar apresentação',
-    pillars: ['Pessoas', 'Expertise', 'Soluções', 'Movimento', 'Oportunidades'],
+    pillars: ['Pessoas', 'Conhecimento', 'Agilidade', 'Presença', 'Movimento'],
     slides: [
       {
         label: 'Marítimo',
         eyebrow: 'Frete marítimo',
-        title: ['Conhecemos o caminho.', 'Mantemos o seu negócio em movimento.'],
-        text: 'Logística internacional para levar a sua empresa mais longe, hoje e amanhã.',
+        title: ['Logística internacional.', 'Simples, ágil e eficiente.'],
+        text: 'O caminho certo para o seu negócio ir mais longe.',
       },
       {
         label: 'Aéreo',
         eyebrow: 'Frete aéreo',
-        title: ['Rotas diferentes.', 'Um amanhã mais forte.'],
-        text: 'Agilidade e as melhores conexões para cargas urgentes, sensíveis e de alto valor.',
+        title: ['Prazos curtos exigem', 'escolhas inteligentes.'],
+        text: 'Agilidade e conexões estratégicas para cargas urgentes, sensíveis e de alto valor.',
       },
       {
         label: 'Rodoviário',
@@ -46,31 +48,52 @@ const pt = {
         label: 'Global',
         eyebrow: 'Rede global',
         title: ['Conexões globais.', 'Negócios reais.'],
-        text: 'Parceiros em todos os continentes conectando a sua empresa a novas oportunidades.',
+        text: 'Uma rede internacional de parceiros conectando sua operação aos principais mercados do mundo.',
       },
     ],
   },
   about: {
     eyebrow: 'Quem somos',
-    statement: 'Mais que logística. Movimento para um mundo de oportunidades.',
-    text: 'A Vectis nasceu para simplificar o comércio exterior. Unimos pessoas experientes, uma rede global de parceiros e tecnologia para planejar, executar e acompanhar cada embarque, com a agilidade e a transparência de que o seu negócio precisa para seguir em frente.',
+    statement:
+      'Na Vectis, experiência, conhecimento de mercado e execução caminham juntos para desenvolver soluções alinhadas às necessidades de cada operação.',
+    text: 'Mais do que movimentar cargas, entendemos o negócio por trás de cada embarque. Assim, transformamos complexidade em decisões mais simples, respostas mais rápidas e caminhos mais eficientes.',
     signature: 'We know the way. We keep it moving.',
     pillars: [
-      { title: 'Pessoas', text: 'Um time experiente e próximo, que trata cada carga como se fosse sua.' },
-      { title: 'Expertise', text: 'Domínio técnico de todos os modais, regimes aduaneiros e rotas internacionais.' },
-      { title: 'Soluções', text: 'Respostas sob medida para cada desafio da sua cadeia de suprimentos.' },
-      { title: 'Movimento', text: 'Agilidade e visibilidade para manter a sua operação sempre fluindo.' },
-      { title: 'Oportunidades', text: 'Novos mercados e novas rotas para levar o seu negócio mais longe.' },
+      {
+        title: 'Pessoas',
+        lead: 'Relações que fazem a diferença.',
+        text: 'Um time experiente, acessível e comprometido com cada etapa da operação.',
+      },
+      {
+        title: 'Conhecimento',
+        lead: 'Experiência que orienta decisões.',
+        text: 'Conhecemos o mercado, as rotas e os desafios da logística internacional para encontrar caminhos mais eficientes.',
+      },
+      {
+        title: 'Agilidade',
+        lead: 'O tempo importa. A resposta também.',
+        text: 'Decisões rápidas, comunicação direta e capacidade de reagir quando o cenário muda.',
+      },
+      {
+        title: 'Presença',
+        lead: 'Sempre perto. Da origem ao destino.',
+        text: 'Acompanhamos cada operação de forma próxima, com comunicação clara e visibilidade ao longo do caminho.',
+      },
+      {
+        title: 'Movimento',
+        lead: 'O caminho só importa quando leva adiante.',
+        text: 'Transformamos decisões em execução para manter cargas e negócios em movimento.',
+      },
     ],
   },
   services: {
     eyebrow: 'O que fazemos',
-    title: ['Soluções de ponta a ponta', 'para mover o seu negócio'],
+    title: ['Tudo o que a sua operação', 'precisa para seguir em frente.'],
     text: 'Cuidamos de cada etapa da sua operação internacional, de forma integrada ou apenas com o serviço de que você precisa.',
     cta: 'Cotar este serviço',
     items: {
       ocean: {
-        text: 'Contêineres completos ou consolidados com os principais armadores, nas rotas que conectam o Brasil ao mundo.',
+        text: 'Soluções em frete marítimo para diferentes perfis de carga, com os principais armadores e rotas internacionais.',
         tags: ['FCL', 'LCL', 'Break bulk', 'Reefer'],
       },
       air: {
@@ -86,30 +109,46 @@ const pt = {
         tags: ['DUIMP', 'LI / LPCO', 'Ex-tarifário', 'Drawback'],
       },
       warehousing: {
-        text: 'Armazéns alfandegados e gerais, gestão de estoque e cross-docking para acelerar a sua operação.',
+        text: 'Soluções de armazenagem alfandegada e geral, gestão de estoque e cross-docking integradas à sua operação.',
         tags: ['Alfandegado', 'Cross-docking', 'WMS', 'Fulfillment'],
       },
       insurance: {
-        text: 'Cobertura internacional sob medida para que a sua mercadoria viaje protegida do início ao fim.',
+        text: 'Seguro de carga para operações nacionais e internacionais, com coberturas adequadas às características de cada embarque.',
         tags: ['All risks', 'Porta a porta', 'Averbação'],
       },
     } satisfies ServiceCopy,
   },
   process: {
     eyebrow: 'Como trabalhamos',
-    title: 'The way forward.',
-    text: 'Um caminho claro, do primeiro contato à entrega final.',
+    signature: 'We know the way. We keep it moving.',
+    title: 'Your way forward.',
+    text: 'Cada operação tem suas particularidades. Nosso trabalho começa por entendê-las.',
     steps: [
-      { title: 'Diagnóstico', text: 'Entendemos a sua carga, os seus prazos, os custos e o momento do seu negócio.' },
-      { title: 'Planejamento', text: 'Desenhamos a rota ideal: modal, consolidação, documentação e compliance.' },
-      { title: 'Execução', text: 'Booking, desembaraço e transporte porta a porta com parceiros qualificados.' },
-      { title: 'Visibilidade', text: 'Acompanhamento proativo de cada etapa, com um especialista dedicado a você.' },
+      {
+        title: 'Entendemos',
+        text: 'Origem, destino, carga, prazos e prioridades. Entendemos o contexto da operação antes de definir a melhor solução.',
+      },
+      {
+        title: 'Planejamos',
+        text: 'Avaliamos rotas, modais, parceiros e alternativas para construir uma operação eficiente e adequada a cada necessidade.',
+      },
+      {
+        title: 'Executamos',
+        text: 'Coordenamos cada etapa da operação, conectando os envolvidos e respondendo rapidamente aos desafios ao longo do percurso.',
+      },
+      {
+        title: 'Acompanhamos',
+        text: 'Mantemos comunicação próxima e visibilidade durante toda a operação, da origem ao destino.',
+      },
     ],
   },
   network: {
     eyebrow: 'Rede global',
     title: ['Conexões globais.', 'Negócios reais.'],
-    text: 'De São Paulo para o mundo: agentes e parceiros nos principais hubs logísticos conectam a sua empresa aos mercados que importam.',
+    text: [
+      'Operamos a partir de um dos principais centros do comércio exterior brasileiro, conectados a uma rede internacional de agentes, armadores, companhias aéreas e parceiros logísticos.',
+      'Essa estrutura nos permite coordenar operações em diferentes mercados, avaliar alternativas e construir o melhor caminho para cada embarque.',
+    ],
     hq: 'Sede',
     cities: {
       saoPaulo: 'São Paulo',
@@ -131,23 +170,20 @@ const pt = {
   },
   industries: {
     eyebrow: 'Setores',
-    title: ['Experiência que atravessa', 'diferentes indústrias'],
-    text: 'Cada setor tem seu ritmo, suas exigências e seus riscos. Conhecemos as particularidades de cada um.',
+    title: ['Experiência que atravessa', 'diferentes mercados'],
+    text: 'Diferentes setores exigem diferentes soluções. Atuamos em operações com perfis, mercados e necessidades distintas, combinando conhecimento e capacidade de execução para responder às particularidades de cada negócio.',
     items: [
-      { icon: 'wheat', title: 'Agronegócio', text: 'Insumos, máquinas e commodities com rotas e prazos sob controle.' },
-      { icon: 'car', title: 'Automotivo', text: 'Peças e componentes em fluxos just-in-time para a sua linha de produção.' },
-      { icon: 'flask-conical', title: 'Químico', text: 'Cargas perigosas com documentação e manuseio especializados.' },
-      { icon: 'pill', title: 'Saúde & Farma', text: 'Temperatura controlada e rastreabilidade de ponta a ponta.' },
-      { icon: 'shopping-cart', title: 'Varejo & E-commerce', text: 'Importação recorrente e reposição ágil do seu estoque.' },
-      { icon: 'cpu', title: 'Tecnologia', text: 'Eletrônicos de alto valor com segurança e velocidade.' },
-      { icon: 'cog', title: 'Máquinas & Equipamentos', text: 'Cargas de projeto, superdimensionadas e break bulk.' },
-      { icon: 'zap', title: 'Energia', text: 'Equipamentos para óleo e gás, solar e eólica no prazo certo.' },
+      { icon: 'wheat', title: 'Agronegócio & Alimentos', text: 'Commodities, alimentos, proteína animal, ingredientes e insumos.' },
+      { icon: 'factory', title: 'Indústria & Manufatura', text: 'Máquinas, equipamentos, partes, peças, componentes e produtos industrializados.' },
+      { icon: 'flask-conical', title: 'Matérias-primas & Insumos', text: 'Polímeros, produtos químicos e insumos para diferentes cadeias produtivas.' },
+      { icon: 'shopping-cart', title: 'Bens de consumo', text: 'Produtos acabados, móveis e mercadorias destinadas ao varejo e distribuição.' },
+      { icon: 'container', title: 'Projetos & Cargas especiais', text: 'Operações que exigem planejamento específico em função das características, dimensões ou necessidades da carga.' },
     ],
   },
   contact: {
     eyebrow: 'Vamos em frente',
     title: ['Fale com um', 'especialista Vectis'],
-    text: 'Conte sobre a sua carga e a sua operação. Um especialista retorna com uma proposta sob medida.',
+    text: 'Conte sobre a sua carga e a sua operação. Nosso time retorna com uma proposta adequada às suas necessidades.',
     response: 'Retorno em até 1 dia útil',
     whatsapp: 'WhatsApp',
     form: {
@@ -192,7 +228,7 @@ const pt = {
       },
       {
         q: 'A Vectis cuida do desembaraço aduaneiro?',
-        a: 'Sim. O nosso time cuida da classificação fiscal, das licenças (LI/LPCO), do registro das declarações (DUIMP e DU-E) e do acompanhamento junto à Receita Federal e aos órgãos anuentes.',
+        a: 'Sim. Coordenamos todo o processo de desembaraço aduaneiro, incluindo classificação fiscal, licenças, registro das declarações e acompanhamento junto à Receita Federal e aos órgãos anuentes.',
       },
       {
         q: 'Como solicito uma cotação?',
@@ -200,7 +236,7 @@ const pt = {
       },
       {
         q: 'Consigo acompanhar o meu embarque?',
-        a: 'Sim. Você recebe atualizações proativas em cada etapa e conta com um especialista dedicado para tirar dúvidas e antecipar soluções.',
+        a: 'Sim. Você recebe atualizações proativas ao longo da operação e conta com nosso time para acompanhar o embarque e esclarecer dúvidas.',
       },
       {
         q: 'Vocês transportam cargas especiais?',
@@ -209,8 +245,9 @@ const pt = {
     ],
   },
   final: {
-    statement: ['Logística internacional com propósito.', 'Hoje. E sempre adiante.'],
-    cta: 'Vamos em frente',
+    title: 'Your way forward.',
+    statement: 'O próximo destino começa com o caminho certo.',
+    cta: 'Fale com a Vectis',
   },
 };
 
@@ -218,7 +255,7 @@ export type HomeCopy = typeof pt;
 
 const en: HomeCopy = {
   meta: {
-    title: 'Vectis International Logistics | The Way Forward',
+    title: 'Vectis International Logistics | Your Way Forward',
     description:
       'End-to-end international logistics: ocean, air and road freight, customs brokerage, warehousing and cargo insurance. We know the way.',
   },
@@ -231,19 +268,19 @@ const en: HomeCopy = {
     goTo: 'Go to slide',
     pause: 'Pause slideshow',
     play: 'Resume slideshow',
-    pillars: ['People', 'Expertise', 'Solutions', 'Movement', 'Opportunities'],
+    pillars: ['People', 'Knowledge', 'Agility', 'Presence', 'Movement'],
     slides: [
       {
         label: 'Ocean',
         eyebrow: 'Ocean freight',
-        title: ['We know the way.', 'We keep it moving.'],
-        text: 'International logistics for a further tomorrow.',
+        title: ['International logistics.', 'Simple, fast and efficient.'],
+        text: 'The right path for your business to go further.',
       },
       {
         label: 'Air',
         eyebrow: 'Air freight',
-        title: ['Different routes.', 'A stronger tomorrow.'],
-        text: 'Speed and the best connections for urgent, sensitive and high-value cargo.',
+        title: ['Tight deadlines call for', 'smart choices.'],
+        text: 'Speed and strategic connections for urgent, sensitive and high-value cargo.',
       },
       {
         label: 'Road',
@@ -255,31 +292,52 @@ const en: HomeCopy = {
         label: 'Global',
         eyebrow: 'Global network',
         title: ['Global connections.', 'Real business.'],
-        text: 'Partners on every continent connecting your company to new opportunities.',
+        text: "An international partner network connecting your operation to the world's key markets.",
       },
     ],
   },
   about: {
     eyebrow: 'Who we are',
-    statement: 'More than logistics. Movement for a world of opportunities.',
-    text: 'Vectis was born to make international trade simpler. We bring together experienced people, a global partner network and technology to plan, execute and follow every shipment, with the speed and transparency your business needs to keep moving forward.',
+    statement:
+      'At Vectis, experience, market knowledge and execution work together to build solutions aligned with the needs of each operation.',
+    text: 'More than moving cargo, we understand the business behind every shipment. That is how we turn complexity into simpler decisions, faster answers and more efficient paths.',
     signature: 'We know the way. We keep it moving.',
     pillars: [
-      { title: 'People', text: 'An experienced, hands-on team that treats every shipment as its own.' },
-      { title: 'Expertise', text: 'Technical command of every mode, customs regime and international route.' },
-      { title: 'Solutions', text: 'Tailored answers to every challenge in your supply chain.' },
-      { title: 'Movement', text: 'Speed and visibility to keep your operation flowing.' },
-      { title: 'Opportunities', text: 'New markets and new routes to take your business further.' },
+      {
+        title: 'People',
+        lead: 'Relationships that make a difference.',
+        text: 'An experienced, accessible team committed to every step of the operation.',
+      },
+      {
+        title: 'Knowledge',
+        lead: 'Experience that guides decisions.',
+        text: 'We know the market, the routes and the challenges of international logistics, so we can find more efficient paths.',
+      },
+      {
+        title: 'Agility',
+        lead: 'Time matters. So does the answer.',
+        text: 'Quick decisions, direct communication and the ability to react when the scenario changes.',
+      },
+      {
+        title: 'Presence',
+        lead: 'Always close. From origin to destination.',
+        text: 'We follow every operation closely, with clear communication and visibility along the way.',
+      },
+      {
+        title: 'Movement',
+        lead: 'A path only matters when it leads forward.',
+        text: 'We turn decisions into execution to keep cargo and business moving.',
+      },
     ],
   },
   services: {
     eyebrow: 'What we do',
-    title: ['End-to-end solutions', 'to move your business'],
+    title: ['Everything your operation', 'needs to keep moving forward.'],
     text: 'We handle every step of your international operation, fully integrated or just the service you need.',
     cta: 'Quote this service',
     items: {
       ocean: {
-        text: 'Full and consolidated containers with leading carriers, on the routes that connect Brazil to the world.',
+        text: 'Ocean freight solutions for different cargo profiles, with leading carriers and international routes.',
         tags: ['FCL', 'LCL', 'Break bulk', 'Reefer'],
       },
       air: {
@@ -295,30 +353,46 @@ const en: HomeCopy = {
         tags: ['DUIMP', 'Licensing', 'Tariff relief', 'Drawback'],
       },
       warehousing: {
-        text: 'Bonded and general warehouses, inventory management and cross-docking to speed up your operation.',
+        text: 'Bonded and general warehousing, inventory management and cross-docking solutions integrated with your operation.',
         tags: ['Bonded', 'Cross-docking', 'WMS', 'Fulfillment'],
       },
       insurance: {
-        text: 'Tailored international coverage so your goods travel protected from start to finish.',
+        text: 'Cargo insurance for domestic and international operations, with coverage suited to the characteristics of each shipment.',
         tags: ['All risks', 'Door to door', 'Open policy'],
       },
     },
   },
   process: {
     eyebrow: 'How we work',
-    title: 'The way forward.',
-    text: 'A clear path, from first contact to final delivery.',
+    signature: 'We know the way. We keep it moving.',
+    title: 'Your way forward.',
+    text: 'Every operation has its own specifics. Our work starts by understanding them.',
     steps: [
-      { title: 'Discovery', text: 'We understand your cargo, deadlines, costs and where your business stands.' },
-      { title: 'Planning', text: 'We design the ideal route: mode, consolidation, documents and compliance.' },
-      { title: 'Execution', text: 'Booking, clearance and door-to-door transport with qualified partners.' },
-      { title: 'Visibility', text: 'Proactive follow-up at every step, with a dedicated specialist.' },
+      {
+        title: 'We understand',
+        text: 'Origin, destination, cargo, deadlines and priorities. We understand the context of the operation before defining the best solution.',
+      },
+      {
+        title: 'We plan',
+        text: 'We assess routes, modes, partners and alternatives to build an efficient operation suited to each need.',
+      },
+      {
+        title: 'We execute',
+        text: 'We coordinate every step of the operation, connecting everyone involved and responding quickly to challenges along the way.',
+      },
+      {
+        title: 'We follow up',
+        text: 'We keep close communication and visibility throughout the operation, from origin to destination.',
+      },
     ],
   },
   network: {
     eyebrow: 'Global network',
     title: ['Global connections.', 'Real business.'],
-    text: 'From São Paulo to the world: agents and partners in the main logistics hubs connect your company to the markets that matter.',
+    text: [
+      "We operate from one of Brazil's leading foreign trade hubs, connected to an international network of agents, ocean carriers, airlines and logistics partners.",
+      'This structure allows us to coordinate operations across different markets, assess alternatives and build the best path for each shipment.',
+    ],
     hq: 'Headquarters',
     cities: {
       saoPaulo: 'São Paulo',
@@ -340,23 +414,20 @@ const en: HomeCopy = {
   },
   industries: {
     eyebrow: 'Industries',
-    title: ['Experience across', 'different industries'],
-    text: 'Every industry has its own pace, requirements and risks. We know the specifics of each one.',
+    title: ['Experience across', 'different markets'],
+    text: 'Different industries require different solutions. We handle operations with distinct profiles, markets and needs, combining knowledge and execution capacity to respond to the specifics of each business.',
     items: [
-      { icon: 'wheat', title: 'Agribusiness', text: 'Inputs, machinery and commodities with routes and lead times under control.' },
-      { icon: 'car', title: 'Automotive', text: 'Parts and components in just-in-time flows for your production line.' },
-      { icon: 'flask-conical', title: 'Chemicals', text: 'Dangerous goods with specialized documents and handling.' },
-      { icon: 'pill', title: 'Healthcare & Pharma', text: 'Temperature control and end-to-end traceability.' },
-      { icon: 'shopping-cart', title: 'Retail & E-commerce', text: 'Recurring imports and fast restocking of your inventory.' },
-      { icon: 'cpu', title: 'Technology', text: 'High-value electronics, moved safely and fast.' },
-      { icon: 'cog', title: 'Machinery & Equipment', text: 'Project, oversized and break bulk cargo.' },
-      { icon: 'zap', title: 'Energy', text: 'Oil & gas, solar and wind equipment, right on schedule.' },
+      { icon: 'wheat', title: 'Agribusiness & Food', text: 'Commodities, food, animal protein, ingredients and inputs.' },
+      { icon: 'factory', title: 'Industry & Manufacturing', text: 'Machinery, equipment, parts, components and manufactured goods.' },
+      { icon: 'flask-conical', title: 'Raw materials & Inputs', text: 'Polymers, chemicals and inputs for different production chains.' },
+      { icon: 'shopping-cart', title: 'Consumer goods', text: 'Finished products, furniture and goods for retail and distribution.' },
+      { icon: 'container', title: 'Projects & Special cargo', text: 'Operations that require specific planning due to the characteristics, dimensions or needs of the cargo.' },
     ],
   },
   contact: {
     eyebrow: "Let's move forward",
     title: ['Talk to a', 'Vectis specialist'],
-    text: 'Tell us about your cargo and your operation. A specialist will get back to you with a tailored proposal.',
+    text: 'Tell us about your cargo and your operation. Our team will get back to you with a proposal suited to your needs.',
     response: 'Reply within 1 business day',
     whatsapp: 'WhatsApp',
     form: {
@@ -401,7 +472,7 @@ const en: HomeCopy = {
       },
       {
         q: 'Does Vectis handle customs clearance in Brazil?',
-        a: 'Yes. Our team takes care of tariff classification, import licensing, filing the declarations (DUIMP and DU-E) and follow-up with Brazilian Customs and the other regulatory agencies.',
+        a: 'Yes. We coordinate the entire customs clearance process, including tariff classification, licensing, filing of declarations and follow-up with Brazilian Customs and the other regulatory agencies.',
       },
       {
         q: 'How do I request a quote?',
@@ -409,7 +480,7 @@ const en: HomeCopy = {
       },
       {
         q: 'Can I follow my shipment?',
-        a: 'Yes. You receive proactive updates at every step and have a dedicated specialist to answer questions and anticipate solutions.',
+        a: 'Yes. You receive proactive updates throughout the operation and can count on our team to follow your shipment and answer your questions.',
       },
       {
         q: 'Do you move special cargo?',
@@ -418,14 +489,15 @@ const en: HomeCopy = {
     ],
   },
   final: {
-    statement: ['International logistics with purpose.', 'Today. And always forward.'],
-    cta: "Let's move forward",
+    title: 'Your way forward.',
+    statement: 'The next destination starts with the right path.',
+    cta: 'Talk to Vectis',
   },
 };
 
 const es: HomeCopy = {
   meta: {
-    title: 'Vectis International Logistics | The Way Forward',
+    title: 'Vectis International Logistics | Your Way Forward',
     description:
       'Logística internacional de punta a punta: flete marítimo, aéreo y terrestre, despacho aduanero, almacenaje y seguro de carga. Conocemos el camino.',
   },
@@ -438,19 +510,19 @@ const es: HomeCopy = {
     goTo: 'Ir a la diapositiva',
     pause: 'Pausar presentación',
     play: 'Reanudar presentación',
-    pillars: ['Personas', 'Experiencia', 'Soluciones', 'Movimiento', 'Oportunidades'],
+    pillars: ['Personas', 'Conocimiento', 'Agilidad', 'Presencia', 'Movimiento'],
     slides: [
       {
         label: 'Marítimo',
         eyebrow: 'Flete marítimo',
-        title: ['Conocemos el camino.', 'Mantenemos su negocio en movimiento.'],
-        text: 'Logística internacional para llevar su empresa más lejos, hoy y mañana.',
+        title: ['Logística internacional.', 'Simple, ágil y eficiente.'],
+        text: 'El camino correcto para que su negocio llegue más lejos.',
       },
       {
         label: 'Aéreo',
         eyebrow: 'Flete aéreo',
-        title: ['Rutas distintas.', 'Un mañana más fuerte.'],
-        text: 'Agilidad y las mejores conexiones para cargas urgentes, sensibles y de alto valor.',
+        title: ['Plazos cortos exigen', 'decisiones inteligentes.'],
+        text: 'Agilidad y conexiones estratégicas para cargas urgentes, sensibles y de alto valor.',
       },
       {
         label: 'Terrestre',
@@ -462,31 +534,52 @@ const es: HomeCopy = {
         label: 'Global',
         eyebrow: 'Red global',
         title: ['Conexiones globales.', 'Negocios reales.'],
-        text: 'Socios en todos los continentes conectando su empresa con nuevas oportunidades.',
+        text: 'Una red internacional de socios que conecta su operación con los principales mercados del mundo.',
       },
     ],
   },
   about: {
     eyebrow: 'Quiénes somos',
-    statement: 'Más que logística. Movimiento hacia un mundo de oportunidades.',
-    text: 'Vectis nació para simplificar el comercio exterior. Reunimos personas con experiencia, una red global de socios y tecnología para planificar, ejecutar y acompañar cada embarque, con la agilidad y la transparencia que su negocio necesita para seguir adelante.',
+    statement:
+      'En Vectis, experiencia, conocimiento del mercado y ejecución van de la mano para desarrollar soluciones alineadas con las necesidades de cada operación.',
+    text: 'Más que mover cargas, entendemos el negocio detrás de cada embarque. Así transformamos la complejidad en decisiones más simples, respuestas más rápidas y caminos más eficientes.',
     signature: 'We know the way. We keep it moving.',
     pillars: [
-      { title: 'Personas', text: 'Un equipo experimentado y cercano, que cuida cada carga como si fuera propia.' },
-      { title: 'Experiencia', text: 'Dominio técnico de todos los modos, regímenes aduaneros y rutas internacionales.' },
-      { title: 'Soluciones', text: 'Respuestas a medida para cada desafío de su cadena de suministro.' },
-      { title: 'Movimiento', text: 'Agilidad y visibilidad para mantener su operación siempre fluyendo.' },
-      { title: 'Oportunidades', text: 'Nuevos mercados y nuevas rutas para llevar su negocio más lejos.' },
+      {
+        title: 'Personas',
+        lead: 'Relaciones que marcan la diferencia.',
+        text: 'Un equipo experimentado, accesible y comprometido con cada etapa de la operación.',
+      },
+      {
+        title: 'Conocimiento',
+        lead: 'Experiencia que orienta decisiones.',
+        text: 'Conocemos el mercado, las rutas y los desafíos de la logística internacional para encontrar caminos más eficientes.',
+      },
+      {
+        title: 'Agilidad',
+        lead: 'El tiempo importa. La respuesta también.',
+        text: 'Decisiones rápidas, comunicación directa y capacidad de reaccionar cuando el escenario cambia.',
+      },
+      {
+        title: 'Presencia',
+        lead: 'Siempre cerca. Del origen al destino.',
+        text: 'Acompañamos cada operación de cerca, con comunicación clara y visibilidad a lo largo del camino.',
+      },
+      {
+        title: 'Movimiento',
+        lead: 'El camino solo importa cuando lleva adelante.',
+        text: 'Transformamos decisiones en ejecución para mantener cargas y negocios en movimiento.',
+      },
     ],
   },
   services: {
     eyebrow: 'Qué hacemos',
-    title: ['Soluciones de punta a punta', 'para mover su negocio'],
+    title: ['Todo lo que su operación', 'necesita para seguir adelante.'],
     text: 'Cuidamos cada etapa de su operación internacional, de forma integrada o solo con el servicio que necesita.',
     cta: 'Cotizar este servicio',
     items: {
       ocean: {
-        text: 'Contenedores completos o consolidados con las principales navieras, en las rutas que conectan Brasil con el mundo.',
+        text: 'Soluciones de flete marítimo para distintos perfiles de carga, con las principales navieras y rutas internacionales.',
         tags: ['FCL', 'LCL', 'Break bulk', 'Reefer'],
       },
       air: {
@@ -502,30 +595,46 @@ const es: HomeCopy = {
         tags: ['DUIMP', 'Licencias', 'Ex-tarifario', 'Drawback'],
       },
       warehousing: {
-        text: 'Almacenes aduaneros y generales, gestión de inventario y cross-docking para acelerar su operación.',
+        text: 'Soluciones de almacenaje aduanero y general, gestión de inventario y cross-docking integradas a su operación.',
         tags: ['Aduanero', 'Cross-docking', 'WMS', 'Fulfillment'],
       },
       insurance: {
-        text: 'Cobertura internacional a medida para que su mercancía viaje protegida de principio a fin.',
+        text: 'Seguro de carga para operaciones nacionales e internacionales, con coberturas adecuadas a las características de cada embarque.',
         tags: ['All risks', 'Puerta a puerta', 'Póliza abierta'],
       },
     },
   },
   process: {
     eyebrow: 'Cómo trabajamos',
-    title: 'The way forward.',
-    text: 'Un camino claro, del primer contacto a la entrega final.',
+    signature: 'We know the way. We keep it moving.',
+    title: 'Your way forward.',
+    text: 'Cada operación tiene sus particularidades. Nuestro trabajo empieza por entenderlas.',
     steps: [
-      { title: 'Diagnóstico', text: 'Entendemos su carga, sus plazos, sus costos y el momento de su negocio.' },
-      { title: 'Planificación', text: 'Diseñamos la ruta ideal: modo, consolidación, documentación y compliance.' },
-      { title: 'Ejecución', text: 'Booking, despacho y transporte puerta a puerta con socios calificados.' },
-      { title: 'Visibilidad', text: 'Seguimiento proactivo de cada etapa, con un especialista dedicado.' },
+      {
+        title: 'Entendemos',
+        text: 'Origen, destino, carga, plazos y prioridades. Entendemos el contexto de la operación antes de definir la mejor solución.',
+      },
+      {
+        title: 'Planificamos',
+        text: 'Evaluamos rutas, modos, socios y alternativas para construir una operación eficiente y adecuada a cada necesidad.',
+      },
+      {
+        title: 'Ejecutamos',
+        text: 'Coordinamos cada etapa de la operación, conectando a los involucrados y respondiendo rápidamente a los desafíos a lo largo del recorrido.',
+      },
+      {
+        title: 'Acompañamos',
+        text: 'Mantenemos una comunicación cercana y visibilidad durante toda la operación, del origen al destino.',
+      },
     ],
   },
   network: {
     eyebrow: 'Red global',
     title: ['Conexiones globales.', 'Negocios reales.'],
-    text: 'De São Paulo al mundo: agentes y socios en los principales hubs logísticos conectan su empresa con los mercados que importan.',
+    text: [
+      'Operamos desde uno de los principales centros del comercio exterior brasileño, conectados a una red internacional de agentes, navieras, aerolíneas y socios logísticos.',
+      'Esta estructura nos permite coordinar operaciones en distintos mercados, evaluar alternativas y construir el mejor camino para cada embarque.',
+    ],
     hq: 'Sede',
     cities: {
       saoPaulo: 'São Paulo',
@@ -547,23 +656,20 @@ const es: HomeCopy = {
   },
   industries: {
     eyebrow: 'Sectores',
-    title: ['Experiencia que atraviesa', 'distintas industrias'],
-    text: 'Cada sector tiene su ritmo, sus exigencias y sus riesgos. Conocemos las particularidades de cada uno.',
+    title: ['Experiencia que atraviesa', 'distintos mercados'],
+    text: 'Distintos sectores exigen distintas soluciones. Actuamos en operaciones con perfiles, mercados y necesidades diferentes, combinando conocimiento y capacidad de ejecución para responder a las particularidades de cada negocio.',
     items: [
-      { icon: 'wheat', title: 'Agronegocio', text: 'Insumos, maquinaria y commodities con rutas y plazos bajo control.' },
-      { icon: 'car', title: 'Automotriz', text: 'Piezas y componentes en flujos just-in-time para su línea de producción.' },
-      { icon: 'flask-conical', title: 'Químico', text: 'Mercancías peligrosas con documentación y manipulación especializadas.' },
-      { icon: 'pill', title: 'Salud y Farma', text: 'Temperatura controlada y trazabilidad de punta a punta.' },
-      { icon: 'shopping-cart', title: 'Retail y E-commerce', text: 'Importación recurrente y reposición ágil de su inventario.' },
-      { icon: 'cpu', title: 'Tecnología', text: 'Electrónicos de alto valor con seguridad y velocidad.' },
-      { icon: 'cog', title: 'Maquinaria y Equipos', text: 'Carga de proyecto, sobredimensionada y break bulk.' },
-      { icon: 'zap', title: 'Energía', text: 'Equipos de petróleo y gas, solar y eólica en el plazo correcto.' },
+      { icon: 'wheat', title: 'Agronegocio y Alimentos', text: 'Commodities, alimentos, proteína animal, ingredientes e insumos.' },
+      { icon: 'factory', title: 'Industria y Manufactura', text: 'Máquinas, equipos, partes, piezas, componentes y productos industrializados.' },
+      { icon: 'flask-conical', title: 'Materias primas e Insumos', text: 'Polímeros, productos químicos e insumos para distintas cadenas productivas.' },
+      { icon: 'shopping-cart', title: 'Bienes de consumo', text: 'Productos terminados, muebles y mercancías destinadas al retail y la distribución.' },
+      { icon: 'container', title: 'Proyectos y Cargas especiales', text: 'Operaciones que exigen una planificación específica según las características, dimensiones o necesidades de la carga.' },
     ],
   },
   contact: {
     eyebrow: 'Sigamos adelante',
     title: ['Hable con un', 'especialista Vectis'],
-    text: 'Cuéntenos sobre su carga y su operación. Un especialista le responderá con una propuesta a medida.',
+    text: 'Cuéntenos sobre su carga y su operación. Nuestro equipo le responderá con una propuesta adecuada a sus necesidades.',
     response: 'Respuesta en hasta 1 día hábil',
     whatsapp: 'WhatsApp',
     form: {
@@ -608,7 +714,7 @@ const es: HomeCopy = {
       },
       {
         q: '¿Vectis se encarga del despacho aduanero en Brasil?',
-        a: 'Sí. Nuestro equipo se ocupa de la clasificación arancelaria, las licencias de importación, el registro de las declaraciones (DUIMP y DU-E) y el seguimiento ante la Aduana brasileña y los demás organismos.',
+        a: 'Sí. Coordinamos todo el proceso de despacho aduanero, incluida la clasificación arancelaria, las licencias, el registro de las declaraciones y el seguimiento ante la Aduana brasileña y los demás organismos intervinientes.',
       },
       {
         q: '¿Cómo solicito una cotización?',
@@ -616,7 +722,7 @@ const es: HomeCopy = {
       },
       {
         q: '¿Puedo seguir mi embarque?',
-        a: 'Sí. Recibe actualizaciones proactivas en cada etapa y cuenta con un especialista dedicado para resolver dudas y anticipar soluciones.',
+        a: 'Sí. Recibe actualizaciones proactivas a lo largo de la operación y cuenta con nuestro equipo para seguir el embarque y resolver dudas.',
       },
       {
         q: '¿Transportan cargas especiales?',
@@ -625,8 +731,9 @@ const es: HomeCopy = {
     ],
   },
   final: {
-    statement: ['Logística internacional con propósito.', 'Hoy. Y siempre adelante.'],
-    cta: 'Sigamos adelante',
+    title: 'Your way forward.',
+    statement: 'El próximo destino empieza con el camino correcto.',
+    cta: 'Hable con Vectis',
   },
 };
 

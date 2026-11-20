@@ -29,10 +29,10 @@ const t = homeCopy[getLocale(Astro.url)].final;
       data-reveal
       data-reveal-delay="100"
     >
-      The way forward.
+      {t.title}
     </p>
-    <p class="eyebrow mt-8 leading-loose tracking-[0.26em] text-steel-200" data-reveal data-reveal-delay="200">
-      {t.statement[0]}<br />{t.statement[1]}
+    <p class="eyebrow mx-auto mt-8 max-w-2xl leading-loose tracking-[0.26em] text-steel-200" data-reveal data-reveal-delay="200">
+      {t.statement}
     </p>
     <a href="#contact" class="btn btn-outline mt-12" data-reveal data-reveal-delay="300">
       {t.cta}

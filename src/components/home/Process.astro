@@ -1,6 +1,6 @@
 ---
 /**
- * "The way forward." — seção com a página "travada" (sticky): o scroll dentro
+ * "Your way forward." — seção com a página "travada" (sticky): o scroll dentro
  * dela preenche a rota e acende as etapas 01 → 04; ao completar, a página
  * volta a rolar normalmente.
  * Desktop: 4 colunas acendendo em sequência. Mobile: a etapa atual troca no lugar.
@@ -19,6 +19,9 @@ const num = (i: number) => String(i + 1).padStart(2, '0');
       <div class="mx-auto max-w-3xl text-center">
         <p class="eyebrow inline-flex items-center gap-3 text-navy-600" data-reveal>
           {t.eyebrow}
+        </p>
+        <p class="eyebrow mt-4 !text-[11px] tracking-[0.3em] text-steel-500" lang="en" data-reveal>
+          {t.signature}
         </p>
         <h2
           class="mt-6 font-display text-[clamp(2.2rem,5.6vw,4.75rem)] font-light uppercase leading-none tracking-[0.18em] text-navy-950"

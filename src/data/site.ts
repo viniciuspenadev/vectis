@@ -6,7 +6,7 @@
 export const site = {
   name: 'Vectis International Logistics',
   shortName: 'Vectis',
-  tagline: 'The way forward.',
+  tagline: 'Your way forward.',
   url: 'https://www.vectislogistics.com',
 
   email: 'contato@vectislogistics.com', // PLACEHOLDER

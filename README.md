@@ -86,6 +86,7 @@ git push -u origin main
 | `SITE_NOINDEX` | `false` | `true` bloqueia buscadores (meta robots + robots.txt) |
 
 Enquanto o site estiver só no domínio provisório do Easypanel, use `SITE_NOINDEX=true` e
-`SITE_URL` com esse domínio. Defina na aba **Environment** do app; se o build não refletir
-os valores, altere o padrão nas linhas `ARG` do `Dockerfile`. Na publicação definitiva,
-volte `SITE_NOINDEX` para `false` e `SITE_URL` para o domínio oficial.
+`SITE_URL` com esse domínio. Defina na aba **Environment** do app: o Easypanel repassa essas
+variáveis ao build como build args (o `Dockerfile` já declara os dois `ARG`). Depois de mudar
+um valor, faça um novo **Deploy**. Na publicação definitiva, remova as duas variáveis (ou
+volte `SITE_NOINDEX` para `false` e `SITE_URL` para o domínio oficial).
