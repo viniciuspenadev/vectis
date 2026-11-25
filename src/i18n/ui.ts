@@ -35,7 +35,7 @@ const pt = {
     insurance: { title: 'Seguro de Carga', short: 'Cobertura internacional' },
   } satisfies ServiceNames,
   footer: {
-    statement: ['Logística internacional com propósito.', 'Hoje. E sempre adiante.'],
+    statement: 'As melhores conexões vão além dos negócios.',
     services: 'Serviços',
     company: 'Empresa',
     contact: 'Contato',
@@ -89,7 +89,7 @@ const en: UI = {
     insurance: { title: 'Cargo Insurance', short: 'International coverage' },
   },
   footer: {
-    statement: ['International logistics with purpose.', 'Today. And always forward.'],
+    statement: 'The best connections go beyond business.',
     services: 'Services',
     company: 'Company',
     contact: 'Contact',
@@ -141,7 +141,7 @@ const es: UI = {
     insurance: { title: 'Seguro de Carga', short: 'Cobertura internacional' },
   },
   footer: {
-    statement: ['Logística internacional con propósito.', 'Hoy. Y siempre adelante.'],
+    statement: 'Las mejores conexiones van más allá de los negocios.',
     services: 'Servicios',
     company: 'Empresa',
     contact: 'Contacto',

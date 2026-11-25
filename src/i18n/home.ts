@@ -2,7 +2,7 @@
  * Conteúdo da home nos três idiomas.
  * PT: textos revisados e aprovados pela diretoria (Vectis_Revisao_Textos_Site_para_Marketing_v2).
  * EN/ES: traduções dos textos aprovados em PT.
- * Tagline oficial: "Your way forward." · Frase institucional: "We know the way. We keep it moving."
+ * Tagline oficial: "Your way forward" · Frase institucional: "We know the way. We keep it moving."
  */
 import type { Locale } from './config';
 import type { ServiceSlug } from '../data/services';
@@ -121,7 +121,7 @@ const pt = {
   process: {
     eyebrow: 'Como trabalhamos',
     signature: 'We know the way. We keep it moving.',
-    title: 'Your way forward.',
+    title: 'Your way forward',
     text: 'Cada operação tem suas particularidades. Nosso trabalho começa por entendê-las.',
     steps: [
       {
@@ -245,7 +245,7 @@ const pt = {
     ],
   },
   final: {
-    title: 'Your way forward.',
+    title: 'Your way forward',
     statement: 'O próximo destino começa com o caminho certo.',
     cta: 'Fale com a Vectis',
   },
@@ -365,7 +365,7 @@ const en: HomeCopy = {
   process: {
     eyebrow: 'How we work',
     signature: 'We know the way. We keep it moving.',
-    title: 'Your way forward.',
+    title: 'Your way forward',
     text: 'Every operation has its own specifics. Our work starts by understanding them.',
     steps: [
       {
@@ -489,7 +489,7 @@ const en: HomeCopy = {
     ],
   },
   final: {
-    title: 'Your way forward.',
+    title: 'Your way forward',
     statement: 'The next destination starts with the right path.',
     cta: 'Talk to Vectis',
   },
@@ -607,7 +607,7 @@ const es: HomeCopy = {
   process: {
     eyebrow: 'Cómo trabajamos',
     signature: 'We know the way. We keep it moving.',
-    title: 'Your way forward.',
+    title: 'Your way forward',
     text: 'Cada operación tiene sus particularidades. Nuestro trabajo empieza por entenderlas.',
     steps: [
       {
@@ -731,7 +731,7 @@ const es: HomeCopy = {
     ],
   },
   final: {
-    title: 'Your way forward.',
+    title: 'Your way forward',
     statement: 'El próximo destino empieza con el camino correcto.',
     cta: 'Hable con Vectis',
   },
